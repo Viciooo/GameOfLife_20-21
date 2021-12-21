@@ -10,7 +10,6 @@ public enum MapDirection {
     W,
     NW;
 
-
     public MapDirection next() {
         switch (this) {
             case N -> {

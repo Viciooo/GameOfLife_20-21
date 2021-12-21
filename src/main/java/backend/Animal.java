@@ -4,13 +4,13 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Animal{
-    private int startEnergy;
-    private int energy; //na początku to jest startEnergy
+    private double startEnergy;
+    private double energy; //na początku to jest startEnergy
     private MapDirection direction;
     private int[] genes;
     private final double minEnergyNeededToReproduce; //only example
     private final double reproducingCost = 0.25;
-    private final int moveEnergy;
+    private final double moveEnergy;
     private final Map map;
     private Vector2d position;
 
@@ -18,11 +18,15 @@ public class Animal{
         return position;
     }
 
-    public int getStartEnergy() {
+    public boolean isDead(){
+        return energy <= 0;
+    }
+
+    public double getStartEnergy() {
         return startEnergy;
     }
 
-    public int getEnergy() {
+    public double getEnergy() {
         return energy;
     }
 
@@ -42,7 +46,7 @@ public class Animal{
         return reproducingCost;
     }
 
-    public int getMoveEnergy() {
+    public double getMoveEnergy() {
         return moveEnergy;
     }
 
@@ -54,11 +58,11 @@ public class Animal{
         this.position = position;
     }
 
-    public void setStartEnergy(int startEnergy) {
+    public void setStartEnergy(double startEnergy) {
         this.startEnergy = startEnergy;
     }
 
-    public void setEnergy(int energy) {
+    public void setEnergy(double energy) {
         this.energy = energy;
     }
 
@@ -70,7 +74,7 @@ public class Animal{
         this.genes = genes;
     }
 
-    public Animal(int startEnergy, MapDirection direction, int[] genes, int moveEnergy, Map map, int x, int y) {
+    public Animal(double startEnergy, MapDirection direction, int[] genes, double moveEnergy, Map map, Vector2d position) {
         this.startEnergy = startEnergy;
         this.energy = startEnergy;
         this.direction = direction;
@@ -79,7 +83,7 @@ public class Animal{
         this.minEnergyNeededToReproduce = 0.5*startEnergy;
         this.moveEnergy = moveEnergy;
         this.map = map;
-        this.position = new Vector2d(x,y);
+        this.position = position;
     }
 
     public void dayPasses(){
@@ -97,6 +101,7 @@ public class Animal{
         int y2 = this.map.getHeight();
         Vector2d lowerLeftCorner = new Vector2d(x1,y1);
         Vector2d upperRightCorner = new Vector2d(x2,y2);
+        Vector2d oldPosition = this.position;
         boolean mapCheck = map.getHasBorders();
         switch (theMove){
             case 0 -> {
@@ -119,6 +124,7 @@ public class Animal{
                         this.setPosition(other);
                     }
                 }
+                map.changePosition(this,oldPosition);
             }
             case 1 -> {
                 this.setDirection(this.direction.next());
@@ -152,6 +158,7 @@ public class Animal{
                         this.setPosition(other);
                     }
                 }
+                map.changePosition(this,oldPosition);
             }
             case 5 ->{
                 this.setDirection(this.direction.previous());

@@ -1,2 +1,1 @@
 # gameOfLife
-OP project

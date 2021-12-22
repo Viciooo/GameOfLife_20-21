@@ -15,6 +15,7 @@ public class Simulation {
             map.feedAnimals();
             map.reproduceAnimals();
             map.addPlants();
+//            TODO notify observer to redraw the map
         }
     }
 }

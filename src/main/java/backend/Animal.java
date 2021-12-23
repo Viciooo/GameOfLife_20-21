@@ -4,11 +4,10 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Animal{
-    private double startEnergy;
-    private double energy; //na początku to jest startEnergy
+    private double energy;
     private MapDirection direction;
-    private int[] genes;
-    private final double minEnergyNeededToReproduce; //only example
+    private final int[] genes;
+    private final double minEnergyNeededToReproduce;
     private final double reproducingCost = 0.25;
     private final double moveEnergy;
     private final Map map;
@@ -20,10 +19,6 @@ public class Animal{
 
     public boolean isDead(){
         return energy <= 0;
-    }
-
-    public double getStartEnergy() {
-        return startEnergy;
     }
 
     public double getEnergy() {
@@ -58,10 +53,6 @@ public class Animal{
         this.position = position;
     }
 
-    public void setStartEnergy(double startEnergy) {
-        this.startEnergy = startEnergy;
-    }
-
     public void setEnergy(double energy) {
         this.energy = energy;
     }
@@ -70,12 +61,7 @@ public class Animal{
         this.direction = direction;
     }
 
-    public void setGenes(int[] genes) {
-        this.genes = genes;
-    }
-
     public Animal(double startEnergy, MapDirection direction, int[] genes, double moveEnergy, Map map, Vector2d position) {
-        this.startEnergy = startEnergy;
         this.energy = startEnergy;
         this.direction = direction;
         this.genes = genes;
@@ -95,6 +81,7 @@ public class Animal{
     }
 
     public void move(int theMove){
+        System.out.println(this.direction);
         int x1 = 0;
         int y1 = 0;
         int x2 = this.map.getWidth();
@@ -173,6 +160,12 @@ public class Animal{
                 this.setDirection(this.direction.previous());
             }
         }
+        dayPasses();
     }
 
+    @Override
+    public String toString() {
+//        return position.toString()+"/"+Arrays.toString(genes)+"/"+energy+"/"+direction.toString();
+        return "$";
+    }
 }

@@ -1,21 +1,25 @@
 package backend;
 
-public class Simulation {
-    Map map;
+import com.example.gameoflife.GridHandler;
 
-    public Simulation(Map map) {
+public class Simulation implements Runnable {
+    private final Map map;
+    private final GridHandler gridHandler;
+
+    public Simulation(Map map, GridHandler gridHandler) {
         this.map = map;
+        this.gridHandler = gridHandler;
     }
 
-    public void run(){
-        map.spawnAllAnimals();
-        while (true){
+    @Override
+    public void run() {
+        while (true) {
             map.removeDeadAnimals();
             map.moveAnimals();
             map.feedAnimals();
             map.reproduceAnimals();
             map.addPlants();
-//            TODO notify observer to redraw the map
+            gridHandler.refreshMap();
         }
     }
 }

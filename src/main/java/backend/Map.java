@@ -11,8 +11,10 @@ public class Map {
     private final boolean hasBorders;
     private final double startEnergy;
     private final double moveEnergy;
-    private final HashMap<Vector2d, TreeSet<Animal>> animals;
-    private final HashMap<Vector2d, Grass> grasses;
+    private final double jungleRatio;
+    private double plantEnergy;
+    private HashMap<Vector2d, TreeSet<Animal>> animals;
+    private HashMap<Vector2d, Grass> grasses;
     private final MapDirection[] possibleMapDirections = {
             MapDirection.N,
             MapDirection.NE,
@@ -23,40 +25,27 @@ public class Map {
             MapDirection.W,
             MapDirection.NW
     };
-    private double jungleRatio;
     private Vector2d jungleLeftLowerCorner;
     private Vector2d jungleRightUpperCorner;
     private ArrayList<Vector2d> allPositions;
-    private ArrayList<Animal> listOfAllAnimals;
+    private final ArrayList<Animal> listOfAllAnimals;
 
-    public Map(int animalsAmount, int width, int height, double jungleRatio, boolean hasBorders, double startEnergy, double moveEnergy, HashMap<Vector2d, TreeSet<Animal>> animals) {
+    public Map(int animalsAmount, int width, int height, double jungleRatio, boolean hasBorders, double startEnergy, double moveEnergy,double plantEnergy) {
         this.animalsAmount = animalsAmount;
         this.width = width;
         this.height = height;
         this.hasBorders = hasBorders;
         this.startEnergy = startEnergy;
         this.moveEnergy = moveEnergy;
-        this.animals = animals;
         this.grasses = new HashMap<>();
+        this.jungleRatio = jungleRatio;
+        this.plantEnergy = plantEnergy;
+        animals = new HashMap<Vector2d,TreeSet<Animal>>();
+        listOfAllAnimals = new ArrayList<>();
         createJungleAndSavannaBoundries();
         createAllPositions();
-        addGrassToJungle();
+        spawnAllAnimals();
     }
-
-    public void createAllPositions() {
-        for (int x = 0; x <= this.width; x++) {
-            for (int y = 0; y <= this.height; y++) {
-                allPositions.add(new Vector2d(x, y));
-            }
-        }
-    }
-
-    public void addGrassToJungle() {
-        for (Vector2d position : allPositions) {
-            if (isInJungle(position)) grasses.put(position, new Grass());
-        }
-    }
-
     public void createJungleAndSavannaBoundries() {
         double jungleArea = width * height / (1 + 1 / jungleRatio);
         int jungleWidth = (int) Math.sqrt(jungleArea);
@@ -71,23 +60,31 @@ public class Map {
         }
         int savannaHeight = (height - jungleHeight) / 2;
         int savannaWidth = (width - jungleWidth) / 2;
-        jungleLeftLowerCorner = new Vector2d(savannaWidth, savannaHeight);
-        jungleRightUpperCorner = new Vector2d(savannaWidth + jungleWidth, savannaHeight + jungleHeight);
+        this.jungleLeftLowerCorner = new Vector2d(savannaWidth, savannaHeight);
+        this.jungleRightUpperCorner = new Vector2d(savannaWidth + jungleWidth, savannaHeight + jungleHeight);
     }
 
-    public void place(Animal animal) {
-        if (animals.get(animal.getPosition()) == null) {
-            TreeSet<Animal> newTreeSet = new TreeSet<>((o1, o2) -> {
-                if (o1.equals(o2)) return 0;
-                if (o1.getEnergy() == o2.getEnergy()) return 1;
-                else return (int) (o1.getEnergy() - o2.getEnergy());
-            });
-            newTreeSet.add(animal);
-            animals.put(animal.getPosition(), newTreeSet);
-        } else {
-            animals.get(animal.getPosition()).add(animal);
+    public void createAllPositions() {
+        this.allPositions = new ArrayList<>();
+        for (int x = 0; x <= this.width; x++) {
+            for (int y = 0; y <= this.height; y++) {
+                this.allPositions.add(new Vector2d(x, y));
+            }
         }
-        this.animalsAmount++;
+    }
+
+    public void spawnAllAnimals() {
+        Random rand = new Random();
+        for (int i = 0; i < animalsAmount; i++) {
+            Vector2d position = new Vector2d(rand.nextInt(width + 1), rand.nextInt(height + 1));
+            int[] genes = new int[32];
+            for (int j = 0; j < 32; j++) {
+                genes[j] = rand.nextInt(8);
+            }
+            Animal newAnimal = new Animal(startEnergy, possibleMapDirections[rand.nextInt(8)], genes, moveEnergy, this, position);
+            System.out.println(newAnimal);
+            spawnAnimal(newAnimal);
+        }
     }
 
     public void spawnAnimal(Animal animal) {
@@ -102,16 +99,25 @@ public class Map {
         } else {
             animals.get(animal.getPosition()).add(animal);
         }
-        this.animalsAmount++;
         listOfAllAnimals.add(animal);
+    }
+
+    public void place(Animal animal) {
+        if (animals.get(animal.getPosition()) == null) {
+            TreeSet<Animal> newTreeSet = new TreeSet<>((o1, o2) -> {
+                if (o1.equals(o2)) return 0;
+                if (o1.getEnergy() == o2.getEnergy()) return 1;
+                else return (int) (o1.getEnergy() - o2.getEnergy());
+            });
+            newTreeSet.add(animal);
+            animals.put(animal.getPosition(), newTreeSet);
+        } else {
+            animals.get(animal.getPosition()).add(animal);
+        }
     }
 
     public void removeAnimal() {
         this.animalsAmount--;
-    }
-
-    public int getAnimalsAmount() {
-        return animalsAmount;
     }
 
     public int getWidth() {
@@ -126,7 +132,7 @@ public class Map {
         return hasBorders;
     }
 
-    public ArrayList<Animal> findStrongestAtPosition(Vector2d position) {
+    public ArrayList<Animal> findAllStrongestAtPosition(Vector2d position) {
         ArrayList<Animal> strongestAnimals = new ArrayList<>();
         Iterator<Animal> iterator = animals.get(position).iterator();
         int i = 0;
@@ -144,23 +150,11 @@ public class Map {
     }
 
     public void feedAnimalsAtPosition(Vector2d position) {
-        ArrayList<Animal> animalsToFeed = findStrongestAtPosition(position);
+        ArrayList<Animal> animalsToFeed = findAllStrongestAtPosition(position);
         double energyPart = grasses.get(position).getPlantEnergy() / animalsToFeed.size();
         grasses.remove(position);
         for (Animal animal : animalsToFeed) {
             animal.setEnergy(animal.getEnergy() + energyPart);
-        }
-    }
-
-    public void feedAnimals(){
-        for(Vector2d position: grasses.keySet()){
-            feedAnimalsAtPosition(position);
-        }
-    }
-
-    public void reproduceAnimals(){
-        for(Vector2d position: animals.keySet()){
-            reproduceAnimalsAtPosition(position);
         }
     }
 
@@ -217,12 +211,45 @@ public class Map {
                     mommy.getPosition()
             );
             spawnAnimal(child);
+            animalsAmount++;
         }
     }
 
+    public void changePosition(Animal animal, Vector2d oldPosition) {
+        TreeSet<Animal> oldTreeSet = animals.get(oldPosition);
+        place(animal);
+        for (Animal a : oldTreeSet) {
+            if (a.equals(animal)) {
+                oldTreeSet.remove(a);
+                break;
+            }
+        }
+    }
+
+    public Animal getStrongestAtPosition(Vector2d position){
+        return findAllStrongestAtPosition(position).get(findAllStrongestAtPosition(position).size()-1);
+    }
+
+    public Object objectAt(Vector2d position){
+        if(animals.get(position) != null) return getStrongestAtPosition(position);
+        if(grasses.containsKey(position)) return new Grass();
+        else return null;
+    }
 
     public boolean isInJungle(Vector2d position) {
         return position.precedes(jungleLeftLowerCorner) && position.follows(jungleRightUpperCorner);
+    }
+
+    public void feedAnimals(){
+        for(Vector2d position: grasses.keySet()){
+            feedAnimalsAtPosition(position);
+        }
+    }
+
+    public void reproduceAnimals(){
+        for(Vector2d position: animals.keySet()){
+            reproduceAnimalsAtPosition(position);
+        }
     }
 
     public void addPlants() {
@@ -246,25 +273,18 @@ public class Map {
     }
 
     public void removeDeadAnimals() {
+        ArrayList<Animal> animalsToRemove = new ArrayList<>();
         for (TreeSet<Animal> animalsAtPosition : animals.values()) {
             for (Animal animal : animalsAtPosition) {
                 if (animal.isDead()) {
-                    listOfAllAnimals.remove(animal);
-                    animalsAtPosition.remove(animal);
+                    animalsToRemove.add(animal);
                 }
             }
             removeAnimal();
         }
-    }
-
-    public void changePosition(Animal animal, Vector2d oldPosition) {
-        TreeSet<Animal> oldTreeSet = animals.get(oldPosition);
-        place(animal);
-        for (Animal a : oldTreeSet) {
-            if (a.equals(animal)) {
-                oldTreeSet.remove(a);
-                break;
-            }
+        for(Animal animal: animalsToRemove){
+            listOfAllAnimals.remove(animal);
+            animals.get(animal.getPosition()).remove(animal);
         }
     }
 
@@ -274,20 +294,6 @@ public class Map {
             animal.move(rand.nextInt(8));
         }
     }
-
-    public void spawnAllAnimals() {
-        Random rand = new Random();
-        for (int i = 0; i < animalsAmount; i++) {
-            Vector2d position = new Vector2d(rand.nextInt(width + 1), rand.nextInt(height + 1));
-            int[] genes = new int[32];
-            for (int j = 0; j < 32; j++) {
-                genes[j] = rand.nextInt(8);
-            }
-            Animal newAnimal = new Animal(startEnergy, possibleMapDirections[rand.nextInt(8)], genes, moveEnergy, this, position);
-            spawnAnimal(newAnimal);
-        }
-    }
-
 
 }
 

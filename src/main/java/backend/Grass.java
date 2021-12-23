@@ -5,4 +5,13 @@ public class Grass{
     public double getPlantEnergy() {
         return plantEnergy;
     }
+
+    public void setPlantEnergy(double plantEnergy) {
+        this.plantEnergy = plantEnergy;
+    }
+
+    @Override
+    public String toString() {
+        return "#";
+    }
 }

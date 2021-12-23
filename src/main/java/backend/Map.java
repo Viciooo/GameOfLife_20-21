@@ -132,30 +132,38 @@ public class Map {
         return hasBorders;
     }
 
+
     public ArrayList<Animal> findAllStrongestAtPosition(Vector2d position) {
         ArrayList<Animal> strongestAnimals = new ArrayList<>();
-        Iterator<Animal> iterator = animals.get(position).iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-            strongestAnimals.add(iterator.next());
-            if (i != 0 && strongestAnimals.get(i).getEnergy() != strongestAnimals.get(i - 1).getEnergy()) {
-                Animal strongest = strongestAnimals.get(i);
-                strongestAnimals = new ArrayList<>();
-                strongestAnimals.add(strongest);
-                i = 0;
+        if(animals.get(position) != null){
+            Iterator<Animal> iterator = animals.get(position).iterator();
+            int i = 0;
+            while (iterator.hasNext()) {
+                strongestAnimals.add(iterator.next());
+                if (i != 0 && strongestAnimals.get(i).getEnergy() != strongestAnimals.get(i - 1).getEnergy()) {
+                    Animal strongest = strongestAnimals.get(i);
+                    strongestAnimals = new ArrayList<>();
+                    strongestAnimals.add(strongest);
+                    i = 0;
+                }
+                i++;
             }
-            i++;
+            return strongestAnimals;
+        }else{
+            return null;
         }
-        return strongestAnimals;
     }
 
     public void feedAnimalsAtPosition(Vector2d position) {
         ArrayList<Animal> animalsToFeed = findAllStrongestAtPosition(position);
-        double energyPart = grasses.get(position).getPlantEnergy() / animalsToFeed.size();
-        grasses.remove(position);
-        for (Animal animal : animalsToFeed) {
-            animal.setEnergy(animal.getEnergy() + energyPart);
+        if(animalsToFeed != null){
+            double energyPart = grasses.get(position).getPlantEnergy() / animalsToFeed.size();
+            grasses.remove(position);
+            for (Animal animal : animalsToFeed) {
+                animal.setEnergy(animal.getEnergy() + energyPart);
+            }
         }
+
     }
 
     public int[] generateGenes(Animal mommy, Animal daddy, Random rand) {
@@ -186,6 +194,8 @@ public class Map {
     public void reproduceAnimalsAtPosition(Vector2d position) {
         Animal daddy = null;
         Animal mommy = null;
+        if(animals.get(position) != null){
+
         Iterator<Animal> iterator = animals.get(position).iterator();
         int i = 0;
         while (iterator.hasNext()) {
@@ -212,6 +222,7 @@ public class Map {
             );
             spawnAnimal(child);
             animalsAmount++;
+        }
         }
     }
 
@@ -296,4 +307,3 @@ public class Map {
     }
 
 }
-

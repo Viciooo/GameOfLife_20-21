@@ -33,6 +33,9 @@ public enum MapDirection {
             case W -> {
                 return NW;
             }
+            case NW -> {
+                return N;
+            }
             default -> {
                 return null;
             }
@@ -61,6 +64,9 @@ public enum MapDirection {
             }
             case E -> {
                 return NE;
+            }
+            case NE -> {
+                return N;
             }
             default -> {
                 return null;

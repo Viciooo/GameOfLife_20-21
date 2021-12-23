@@ -2,6 +2,7 @@ package com.example.gameoflife;
 
 import backend.Map;
 import backend.Vector2d;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -49,26 +50,28 @@ public class GridHandler {
     }
 
     public void refreshMap(){
-        clearGrid();
-        for (int i = 0; i < y; i++)
-            for (int j = 0; j < x; j++) {
-                int x1 = i;
+        Platform.runLater(() -> {
+            clearGrid();
+            for (int i = 0; i < y; i++)
+                for (int j = 0; j < x; j++) {
+                    int x1 = i;
 
-                String text = "";
-                if (i == 0 && j == 0) text = "y/x";
-                else if (i == 0) text = String.valueOf(j - 1);
-                else if (j == 0) text = String.valueOf(y - i - 1);
-                else {
-                    if (map.objectAt(new Vector2d(j - 1, i - 1)) != null) {
-                        text = map.objectAt(new Vector2d(j - 1, i - 1)).toString();
+                    String text = "";
+                    if (i == 0 && j == 0) text = "y/x";
+                    else if (i == 0) text = String.valueOf(j - 1);
+                    else if (j == 0) text = String.valueOf(y - i - 1);
+                    else {
+                        if (map.objectAt(new Vector2d(j - 1, i - 1)) != null) {
+                            text = map.objectAt(new Vector2d(j - 1, i - 1)).toString();
+                        }
+                        x1 = y - i;
                     }
-                    x1 = y - i;
+                    Label newLabel = new Label(text);
+                    GridPane.setConstraints(newLabel, j, x1);
+                    GridPane.setHalignment(newLabel, HPos.CENTER);
+                    gridPane.add(newLabel, j, x1);
                 }
-                Label newLabel = new Label(text);
-                GridPane.setConstraints(newLabel, j, x1);
-                GridPane.setHalignment(newLabel, HPos.CENTER);
-                gridPane.add(newLabel, j, x1);
-            }
+        });
     }
 
 }

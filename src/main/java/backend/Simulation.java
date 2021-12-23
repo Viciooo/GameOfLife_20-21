@@ -19,7 +19,13 @@ public class Simulation implements Runnable {
             map.feedAnimals();
             map.reproduceAnimals();
             map.addPlants();
+            System.out.println("Working");
             gridHandler.refreshMap();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

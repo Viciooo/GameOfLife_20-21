@@ -2,8 +2,10 @@ package com.example.gameoflife;
 
 import backend.Map;
 import backend.Simulation;
+import backend.Testing;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -69,11 +71,17 @@ public class App extends Application {
         GridHandler rightGrid = new GridHandler(mapWithBorders);
         leftVbox.getChildren().add(leftGrid.getGridPane());
         rightVbox.getChildren().add(rightGrid.getGridPane());
-        stg.setScene(new Scene(hbox));
-        stg.setMaximized(true);
-        Simulation forMapNoBorders = new Simulation(mapNoBorders, leftGrid);
-        Simulation forMapWithBorders = new Simulation(mapWithBorders, rightGrid);
+        stg.setScene(new Scene(hbox,1000,1000));
+//        stg.setMaximized(true);
+//        Simulation forMapWithBorders = new Simulation(mapWithBorders, rightGrid);
+        Thread mapNoBordersThread = new Thread(new Simulation(mapNoBorders, leftGrid));
+//        Thread mapWithBorders = new Thread(forMapWithBorders);
 //        forMapNoBorders.run();
+        mapNoBordersThread.start();
+//        Thread test1 = new Thread(new Testing("1"));
+//        Thread test2 = new Thread(new Testing("2"));
+//        test1.start();
+//        test2.start();
     }
 
 

@@ -158,7 +158,7 @@ public class Map {
     public Vector2d feedAnimalsAtPosition(Vector2d position) {
         ArrayList<Animal> animalsToFeed = findAllStrongestAtPosition(position);
         if(animalsToFeed != null){
-            double energyPart = grasses.get(position).getPlantEnergy() / animalsToFeed.size();
+            double energyPart = plantEnergy/ animalsToFeed.size();
             for (Animal animal : animalsToFeed) {
                 animal.setEnergy(animal.getEnergy() + energyPart);
             }
@@ -280,9 +280,13 @@ public class Map {
     public void addPlants() {
         boolean jungleGrassPlaced = false;
         boolean savannaGrassPlaced = false;
-        while (!jungleGrassPlaced && !savannaGrassPlaced) {
+        int i = 0;
+        System.out.println(grasses.size());
+        while ((!jungleGrassPlaced || !savannaGrassPlaced) && i < width*height) {
             int x = ThreadLocalRandom.current().nextInt(0, width);
             int y = ThreadLocalRandom.current().nextInt(0, height);
+            i++;
+            System.out.println(grasses.toString());
             Vector2d grassProposition = new Vector2d(x, y);
             if (!grasses.containsKey(grassProposition) && !animals.containsKey(grassProposition)) {
                 if (isInJungle(grassProposition) && !jungleGrassPlaced) {

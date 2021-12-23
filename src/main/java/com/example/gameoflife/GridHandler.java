@@ -9,7 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 
 public class GridHandler {
-    private GridPane gridPane = new GridPane();
+    private final GridPane gridPane = new GridPane();
     private final Map map;
     private final int x;
     private final int y;
@@ -24,20 +24,6 @@ public class GridHandler {
         this.y = map.getHeight() + 2;
         gridPane.setPadding(new Insets(5, 5, 5, 5));
         gridPane.setGridLinesVisible(true);
-//
-//        for (int i = 0; i < x; i++) {
-//            ColumnConstraints columnConstraints = new ColumnConstraints(100);
-//            columnConstraints.setPercentWidth(100.0 / x);
-//            gridPane.getColumnConstraints().add(columnConstraints);
-//        }
-//
-//        for (int i = 0; i < y; i++) {
-//            RowConstraints rowConstraints = new RowConstraints(100);
-//            rowConstraints.setPercentHeight(100.0 / y);
-//            gridPane.getRowConstraints().add(rowConstraints);
-//        }
-//        gridPane.setMinWidth(10 * x);
-//        gridPane.setMinHeight(10 * y);
         refreshMap();
     }
 

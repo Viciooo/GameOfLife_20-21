@@ -15,18 +15,18 @@ public class Simulation implements Runnable {
     public void run() {
         int i = 0;
         while (true) {
-            map.removeDeadAnimals();
-            map.moveAnimals();
-            map.feedAnimals();
-            map.reproduceAnimals();
-            map.addPlants();
-            System.out.println(i);
-            gridHandler.refreshMap();
-            i++;
             try {
-                Thread.sleep(3);
+//                map.removeDeadAnimals();
+                map.moveAnimals();
+                map.feedAnimals();
+                map.reproduceAnimals();
+                map.addPlants();
+                System.out.println(i);
+                gridHandler.refreshMap();
+                i++;
+                Thread.sleep(30);
 
-            } catch (InterruptedException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }

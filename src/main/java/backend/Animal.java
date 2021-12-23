@@ -81,7 +81,7 @@ public class Animal{
     }
 
     public void move(int theMove){
-        System.out.println(this.direction);
+        System.out.println("Im fucking thriving"+theMove);
         int x1 = 0;
         int y1 = 0;
         int x2 = this.map.getWidth();

@@ -13,16 +13,19 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
+        int i = 0;
         while (true) {
             map.removeDeadAnimals();
             map.moveAnimals();
             map.feedAnimals();
             map.reproduceAnimals();
             map.addPlants();
-            System.out.println("Working");
+            System.out.println(i);
             gridHandler.refreshMap();
+            i++;
             try {
-                Thread.sleep(300);
+                Thread.sleep(3);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

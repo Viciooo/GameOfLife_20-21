@@ -1,6 +1,7 @@
 package backend;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Map {
@@ -13,8 +14,8 @@ public class Map {
     private final double moveEnergy;
     private final double jungleRatio;
     private double plantEnergy;
-    private HashMap<Vector2d, TreeSet<Animal>> animals;
-    private HashMap<Vector2d, Grass> grasses;
+    private ConcurrentHashMap<Vector2d,TreeSet<Animal>> animals;
+    private ConcurrentHashMap<Vector2d,Grass> grasses;
     private final MapDirection[] possibleMapDirections = {
             MapDirection.N,
             MapDirection.NE,
@@ -37,10 +38,10 @@ public class Map {
         this.hasBorders = hasBorders;
         this.startEnergy = startEnergy;
         this.moveEnergy = moveEnergy;
-        this.grasses = new HashMap<>();
+        this.grasses = new ConcurrentHashMap<>();
         this.jungleRatio = jungleRatio;
         this.plantEnergy = plantEnergy;
-        animals = new HashMap<Vector2d,TreeSet<Animal>>();
+        animals = new ConcurrentHashMap<>();
         listOfAllAnimals = new ArrayList<>();
         createJungleAndSavannaBoundries();
         createAllPositions();
@@ -89,10 +90,11 @@ public class Map {
 
     public void spawnAnimal(Animal animal) {
         if (animals.get(animal.getPosition()) == null) {
-            TreeSet<Animal> newTreeSet = new TreeSet<>((o1, o2) -> {
-                if (o1.equals(o2)) return 0;
-                if (o1.getEnergy() == o2.getEnergy()) return 1;
-                else return (int) (o1.getEnergy() - o2.getEnergy());
+            TreeSet<Animal> newTreeSet = new TreeSet<>(new AnimalsComparator() {
+                @Override
+                public int compare(Animal o1, Animal o2) {
+                    return super.compare(o1, o2);
+                }
             });
             newTreeSet.add(animal);
             animals.put(animal.getPosition(), newTreeSet);
@@ -104,10 +106,11 @@ public class Map {
 
     public void place(Animal animal) {
         if (animals.get(animal.getPosition()) == null) {
-            TreeSet<Animal> newTreeSet = new TreeSet<>((o1, o2) -> {
-                if (o1.equals(o2)) return 0;
-                if (o1.getEnergy() == o2.getEnergy()) return 1;
-                else return (int) (o1.getEnergy() - o2.getEnergy());
+            TreeSet<Animal> newTreeSet = new TreeSet<>(new AnimalsComparator() {
+                @Override
+                public int compare(Animal o1, Animal o2) {
+                    return super.compare(o1, o2);
+                }
             });
             newTreeSet.add(animal);
             animals.put(animal.getPosition(), newTreeSet);
@@ -135,18 +138,16 @@ public class Map {
 
     public ArrayList<Animal> findAllStrongestAtPosition(Vector2d position) {
         ArrayList<Animal> strongestAnimals = new ArrayList<>();
+        boolean first = true;
         if(animals.get(position) != null){
-            Iterator<Animal> iterator = animals.get(position).iterator();
-            int i = 0;
-            while (iterator.hasNext()) {
-                strongestAnimals.add(iterator.next());
-                if (i != 0 && strongestAnimals.get(i).getEnergy() != strongestAnimals.get(i - 1).getEnergy()) {
-                    Animal strongest = strongestAnimals.get(i);
-                    strongestAnimals = new ArrayList<>();
-                    strongestAnimals.add(strongest);
-                    i = 0;
+            for(Animal animal :animals.get(position)){
+                if(first){
+                    strongestAnimals.add(animal);
+                    first = false;
                 }
-                i++;
+                if(animal.getEnergy() == strongestAnimals.get(0).getEnergy()){
+                    strongestAnimals.add(animal);
+                }
             }
             return strongestAnimals;
         }else{
@@ -154,19 +155,20 @@ public class Map {
         }
     }
 
-    public void feedAnimalsAtPosition(Vector2d position) {
+    public Vector2d feedAnimalsAtPosition(Vector2d position) {
         ArrayList<Animal> animalsToFeed = findAllStrongestAtPosition(position);
         if(animalsToFeed != null){
             double energyPart = grasses.get(position).getPlantEnergy() / animalsToFeed.size();
-            grasses.remove(position);
             for (Animal animal : animalsToFeed) {
                 animal.setEnergy(animal.getEnergy() + energyPart);
             }
+            return position;
         }
+        return null;
 
     }
 
-    public int[] generateGenes(Animal mommy, Animal daddy, Random rand) {
+    public int[] generateGenes(Animal daddy, Animal mommy, Random rand) {
         double sumOfEnergy = mommy.getEnergy() + daddy.getEnergy();
         double energyPerOneGene = sumOfEnergy / 32;
         int[] childGenes = new int[32];
@@ -238,6 +240,9 @@ public class Map {
     }
 
     public Animal getStrongestAtPosition(Vector2d position){
+        if(findAllStrongestAtPosition(position) == null || findAllStrongestAtPosition(position).size() == 0){
+            return null;
+        }
         return findAllStrongestAtPosition(position).get(findAllStrongestAtPosition(position).size()-1);
     }
 
@@ -252,9 +257,18 @@ public class Map {
     }
 
     public void feedAnimals(){
-        for(Vector2d position: grasses.keySet()){
-            feedAnimalsAtPosition(position);
+        ArrayList<Vector2d> grassToRemove = new ArrayList<>();
+        for (Vector2d vector2d : grasses.keySet()) {
+            grassToRemove.add(feedAnimalsAtPosition(vector2d));
         }
+        if(grassToRemove.size()>0){
+            for(Vector2d g: grassToRemove){
+                if(g != null){
+                    grasses.remove(g);
+                }
+            }
+        }
+
     }
 
     public void reproduceAnimals(){
@@ -296,6 +310,7 @@ public class Map {
         for(Animal animal: animalsToRemove){
             listOfAllAnimals.remove(animal);
             animals.get(animal.getPosition()).remove(animal);
+            System.out.println("I died");
         }
     }
 

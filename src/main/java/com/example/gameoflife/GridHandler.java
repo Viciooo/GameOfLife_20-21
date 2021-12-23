@@ -24,20 +24,20 @@ public class GridHandler {
         this.y = map.getHeight() + 2;
         gridPane.setPadding(new Insets(5, 5, 5, 5));
         gridPane.setGridLinesVisible(true);
-
-        for (int i = 0; i < x; i++) {
-            ColumnConstraints columnConstraints = new ColumnConstraints(100);
-            columnConstraints.setPercentWidth(100.0 / x);
-            gridPane.getColumnConstraints().add(columnConstraints);
-        }
-
-        for (int i = 0; i < y; i++) {
-            RowConstraints rowConstraints = new RowConstraints(100);
-            rowConstraints.setPercentHeight(100.0 / y);
-            gridPane.getRowConstraints().add(rowConstraints);
-        }
-        gridPane.setMinWidth(10 * x);
-        gridPane.setMinHeight(10 * y);
+//
+//        for (int i = 0; i < x; i++) {
+//            ColumnConstraints columnConstraints = new ColumnConstraints(100);
+//            columnConstraints.setPercentWidth(100.0 / x);
+//            gridPane.getColumnConstraints().add(columnConstraints);
+//        }
+//
+//        for (int i = 0; i < y; i++) {
+//            RowConstraints rowConstraints = new RowConstraints(100);
+//            rowConstraints.setPercentHeight(100.0 / y);
+//            gridPane.getRowConstraints().add(rowConstraints);
+//        }
+//        gridPane.setMinWidth(10 * x);
+//        gridPane.setMinHeight(10 * y);
         refreshMap();
     }
 
@@ -46,12 +46,27 @@ public class GridHandler {
         gridPane.getColumnConstraints().clear();
         gridPane.getRowConstraints().clear();
         gridPane.getChildren().clear();
-        gridPane.setGridLinesVisible(true);
     }
 
     public void refreshMap(){
         Platform.runLater(() -> {
             clearGrid();
+            gridPane.setPadding(new Insets(5, 5, 5, 5));
+            gridPane.setGridLinesVisible(true);
+
+            for (int i = 0; i < x; i++) {
+                ColumnConstraints columnConstraints = new ColumnConstraints(100);
+                columnConstraints.setPercentWidth(100.0 / x);
+                gridPane.getColumnConstraints().add(columnConstraints);
+            }
+
+            for (int i = 0; i < y; i++) {
+                RowConstraints rowConstraints = new RowConstraints(100);
+                rowConstraints.setPercentHeight(100.0 / y);
+                gridPane.getRowConstraints().add(rowConstraints);
+            }
+            gridPane.setMinWidth(10 * x);
+            gridPane.setMinHeight(10 * y);
             for (int i = 0; i < y; i++)
                 for (int j = 0; j < x; j++) {
                     int x1 = i;
@@ -71,6 +86,7 @@ public class GridHandler {
                     GridPane.setHalignment(newLabel, HPos.CENTER);
                     gridPane.add(newLabel, j, x1);
                 }
+            gridPane.setGridLinesVisible(true);
         });
     }
 

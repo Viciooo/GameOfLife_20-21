@@ -2,17 +2,16 @@ package com.example.gameoflife;
 
 import backend.Map;
 import backend.Simulation;
-import backend.Testing;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
@@ -48,7 +47,8 @@ public class App extends Application {
                 true,
                 Integer.parseInt(this.startEnergyTF.getText()),
                 Integer.parseInt(this.moveEnergyTF.getText()),
-                Double.parseDouble(this.plantEnergyTF.getText()));
+                Double.parseDouble(this.plantEnergyTF.getText()),
+                false);
 
         mapNoBorders = new Map(
                 Integer.parseInt(this.animalsAmountTF.getText()),
@@ -58,30 +58,39 @@ public class App extends Application {
                 false,
                 Integer.parseInt(this.startEnergyTF.getText()),
                 Integer.parseInt(this.moveEnergyTF.getText()),
-                Double.parseDouble(this.plantEnergyTF.getText()));
+                Double.parseDouble(this.plantEnergyTF.getText()),
+                false);
 
         mapsInit();
     }
 
+
     public void mapsInit(){
-        VBox leftVbox = new VBox();
-        VBox rightVbox = new VBox();
-        HBox hbox = new HBox(leftVbox,rightVbox);
+        VBox leftVbox = new VBox(new Text("Map with no borders"));
+        VBox rightVbox = new VBox(new Text("Map with borders"));
+        Button startStopLeft = new Button("start/stop");
+        Button startStopRight = new Button("start/stop");
+        HBox boards = new HBox(leftVbox,rightVbox);
+        HBox buttonsContainer = new HBox(startStopLeft,startStopRight);
+        VBox buttonsAndBoardsContainer = new VBox(boards,buttonsContainer);
+
+        startStopLeft.setOnAction(event -> {
+            this.mapNoBorders.swapRunning();
+        });
+        startStopRight.setOnAction(event -> this.mapWithBorders.swapRunning());
+
         GridHandler leftGrid = new GridHandler(mapNoBorders);
         GridHandler rightGrid = new GridHandler(mapWithBorders);
         leftVbox.getChildren().add(leftGrid.getGridPane());
         rightVbox.getChildren().add(rightGrid.getGridPane());
-        stg.setScene(new Scene(hbox,1000,1000));
-//        stg.setMaximized(true);
-//        Simulation forMapWithBorders = new Simulation(mapWithBorders, rightGrid);
+        stg.setScene(new Scene(buttonsAndBoardsContainer,500,500));
+        stg.setResizable(true);
+        Thread mapWithBordersThread = new Thread(new Simulation(mapWithBorders, rightGrid));
         Thread mapNoBordersThread = new Thread(new Simulation(mapNoBorders, leftGrid));
-//        Thread mapWithBorders = new Thread(forMapWithBorders);
-//        forMapNoBorders.run();
         mapNoBordersThread.start();
-//        Thread test1 = new Thread(new Testing("1"));
-//        Thread test2 = new Thread(new Testing("2"));
-//        test1.start();
-//        test2.start();
+        mapWithBordersThread.start();
+//        Thread forTests = new Thread(new Testing("a"));
+//        forTests.start();
     }
 
 

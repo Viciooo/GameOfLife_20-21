@@ -9,10 +9,10 @@ public class Testing implements Runnable {
 
     @Override
     public void run() {
-        for(int i = 0;i< 20;i++){
+        while(true){
             System.out.println(message);
             try {
-                Thread.sleep(300);
+                Thread.sleep(3);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

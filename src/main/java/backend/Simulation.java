@@ -1,5 +1,6 @@
 package backend;
 
+import com.example.gameoflife.App;
 import com.example.gameoflife.GridHandler;
 
 public class Simulation implements Runnable {
@@ -13,21 +14,20 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        int i = 0;
         while (true) {
-            map.removeDeadAnimals();
-            map.moveAnimals();
-            map.feedAnimals();
-            map.reproduceAnimals();
-            map.addPlants();
-            System.out.println(i);
-            gridHandler.refreshMap();
-            i++;
+//            System.out.println(this.map.isMapRunning());
+            if (this.map.isMapRunning()) {
             try {
-                Thread.sleep(3);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                    map.removeDeadAnimals();
+                    map.moveAnimals();
+                    map.feedAnimals();
+                    map.reproduceAnimals();
+                    map.addPlants();
+                    gridHandler.refreshMap();
+                    Thread.sleep(300);
+                } catch(Throwable e){
+                    e.printStackTrace();
+                }
             }
         }
     }

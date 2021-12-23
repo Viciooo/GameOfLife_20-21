@@ -16,6 +16,7 @@ public class Map {
     private double plantEnergy;
     private ConcurrentHashMap<Vector2d,TreeSet<Animal>> animals;
     private ConcurrentHashMap<Vector2d,Grass> grasses;
+    private boolean isMapRunning;
     private final MapDirection[] possibleMapDirections = {
             MapDirection.N,
             MapDirection.NE,
@@ -31,13 +32,14 @@ public class Map {
     private ArrayList<Vector2d> allPositions;
     private final ArrayList<Animal> listOfAllAnimals;
 
-    public Map(int animalsAmount, int width, int height, double jungleRatio, boolean hasBorders, double startEnergy, double moveEnergy,double plantEnergy) {
+    public Map(int animalsAmount, int width, int height, double jungleRatio, boolean hasBorders, double startEnergy, double moveEnergy, double plantEnergy, boolean isMapRunning) {
         this.animalsAmount = animalsAmount;
         this.width = width;
         this.height = height;
         this.hasBorders = hasBorders;
         this.startEnergy = startEnergy;
         this.moveEnergy = moveEnergy;
+        this.isMapRunning = isMapRunning;
         this.grasses = new ConcurrentHashMap<>();
         this.jungleRatio = jungleRatio;
         this.plantEnergy = plantEnergy;
@@ -119,6 +121,14 @@ public class Map {
         }
     }
 
+    public synchronized boolean isMapRunning() {
+        return this.isMapRunning;
+    }
+
+    public synchronized void swapRunning() {
+        this.isMapRunning = !this.isMapRunning;
+    }
+
     public void removeAnimal() {
         this.animalsAmount--;
     }
@@ -158,7 +168,7 @@ public class Map {
     public Vector2d feedAnimalsAtPosition(Vector2d position) {
         ArrayList<Animal> animalsToFeed = findAllStrongestAtPosition(position);
         if(animalsToFeed != null){
-            double energyPart = grasses.get(position).getPlantEnergy() / animalsToFeed.size();
+            double energyPart = plantEnergy/ animalsToFeed.size();
             for (Animal animal : animalsToFeed) {
                 animal.setEnergy(animal.getEnergy() + energyPart);
             }
@@ -280,16 +290,18 @@ public class Map {
     public void addPlants() {
         boolean jungleGrassPlaced = false;
         boolean savannaGrassPlaced = false;
-        while (!jungleGrassPlaced && !savannaGrassPlaced) {
+        int i = 0;
+        while ((!jungleGrassPlaced || !savannaGrassPlaced) && i < width*height*2) {
             int x = ThreadLocalRandom.current().nextInt(0, width);
             int y = ThreadLocalRandom.current().nextInt(0, height);
             Vector2d grassProposition = new Vector2d(x, y);
-            if (!grasses.containsKey(grassProposition) && !animals.containsKey(grassProposition)) {
+            i++;
+            if (grasses.get(grassProposition) == null && animals.get(grassProposition) == null) {
                 if (isInJungle(grassProposition) && !jungleGrassPlaced) {
                     grasses.put(grassProposition, new Grass());
                     jungleGrassPlaced = true;
                 }
-                if (!isInJungle(grassProposition) && !savannaGrassPlaced) {
+                else if (!isInJungle(grassProposition) && !savannaGrassPlaced) {
                     grasses.put(grassProposition, new Grass());
                     savannaGrassPlaced = true;
                 }
@@ -305,12 +317,11 @@ public class Map {
                     animalsToRemove.add(animal);
                 }
             }
-            removeAnimal();
         }
         for(Animal animal: animalsToRemove){
             listOfAllAnimals.remove(animal);
             animals.get(animal.getPosition()).remove(animal);
-            System.out.println("I died");
+            removeAnimal();
         }
     }
 

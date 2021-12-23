@@ -164,7 +164,6 @@ public class Animal{
 
     @Override
     public String toString() {
-//        return position.toString()+"/"+Arrays.toString(genes)+"/"+energy+"/"+direction.toString();
-        return "$";
+        return "src/main/resources/hedgehog_img.jpg";
     }
 }

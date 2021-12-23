@@ -5,8 +5,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Map {
+//    to be shown on chart
 
-    private int animalsAmount;
+private int animalsAmount;
+private int plantsAmount = 0;
+private int[] genomDominant;
+private double avgAnimalsEnergy;
+private double avgAnimalLifeSpan;
+private double avgAnimalChildrenAmount;
+
+//    to be shown on chart end
+
     private final int width;
     private final int height;
     private final boolean hasBorders;
@@ -275,6 +284,7 @@ public class Map {
             for(Vector2d g: grassToRemove){
                 if(g != null){
                     grasses.remove(g);
+                    plantsAmount--;
                 }
             }
         }
@@ -300,10 +310,12 @@ public class Map {
                 if (isInJungle(grassProposition) && !jungleGrassPlaced) {
                     grasses.put(grassProposition, new Grass());
                     jungleGrassPlaced = true;
+                    plantsAmount++;
                 }
                 else if (!isInJungle(grassProposition) && !savannaGrassPlaced) {
                     grasses.put(grassProposition, new Grass());
                     savannaGrassPlaced = true;
+                    plantsAmount++;
                 }
             }
         }

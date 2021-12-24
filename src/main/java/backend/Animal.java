@@ -1,23 +1,34 @@
 package backend;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Objects;
 
-public class Animal{
+public class Animal {
     private double energy;
     private MapDirection direction;
-    private final int[] genes;
+    private final ArrayList<Integer> genes;
     private final double minEnergyNeededToReproduce;
     private final double reproducingCost = 0.25;
     private final double moveEnergy;
     private final Map map;
+    private final int epochOfBirth;
     private Vector2d position;
+    private int childrenAmount = 0;
+
+    public int getEpochOfBirth() {
+        return epochOfBirth;
+    }
+
+    public int getChildrenAmount() {
+        return childrenAmount;
+    }
 
     public Vector2d getPosition() {
         return position;
     }
 
-    public boolean isDead(){
+    public boolean isDead() {
         return energy <= 0;
     }
 
@@ -29,7 +40,7 @@ public class Animal{
         return direction;
     }
 
-    public int[] getGenes() {
+    public ArrayList<Integer> getGenes() {
         return genes;
     }
 
@@ -61,38 +72,40 @@ public class Animal{
         this.direction = direction;
     }
 
-    public Animal(double startEnergy, MapDirection direction, int[] genes, double moveEnergy, Map map, Vector2d position) {
+    public Animal(double startEnergy, MapDirection direction, ArrayList<Integer> genes, double moveEnergy, Map map, Vector2d position) {
         this.energy = startEnergy;
         this.direction = direction;
         this.genes = genes;
-        Arrays.sort(this.genes);
-        this.minEnergyNeededToReproduce = 0.5*startEnergy;
+        this.genes.sort(Comparator.naturalOrder());
+        this.minEnergyNeededToReproduce = 0.5 * startEnergy;
         this.moveEnergy = moveEnergy;
         this.map = map;
         this.position = position;
+        this.epochOfBirth = this.map.getEpochNumber();
     }
 
-    public void dayPasses(){
+    public void dayPasses() {
         this.energy -= moveEnergy;
     }
 
-    public void reproduce(){
-        this.energy -= reproducingCost*energy;
+    public void reproduce() {
+        this.energy -= reproducingCost * energy;
+        this.childrenAmount++;
     }
 
-    public void move(int theMove){
+    public void move(int theMove) {
         int x1 = 0;
         int y1 = 0;
         int x2 = this.map.getWidth();
         int y2 = this.map.getHeight();
-        Vector2d lowerLeftCorner = new Vector2d(x1,y1);
-        Vector2d upperRightCorner = new Vector2d(x2,y2);
+        Vector2d lowerLeftCorner = new Vector2d(x1, y1);
+        Vector2d upperRightCorner = new Vector2d(x2, y2);
         Vector2d oldPosition = this.position;
         boolean mapCheck = map.getHasBorders();
-        switch (theMove){
+        switch (theMove) {
             case 0 -> {
                 Vector2d other = getPosition().add((Objects.requireNonNull(this.getDirection().toUnitVector())));
-                if(mapCheck){
+                if (!mapCheck) {
                     if (other.getX() < x1) {
                         this.setPosition(this.position.add(new Vector2d(x2, 0)));
                     } else if (other.getY() < y1) {
@@ -104,13 +117,14 @@ public class Animal{
                     } else {
                         this.setPosition(this.position.add(Objects.requireNonNull(getDirection().toUnitVector())));
                     }
-                }
-                else{
-                    if(other.follows(upperRightCorner) && other.precedes(lowerLeftCorner)){
+                    map.changePosition(this, oldPosition);
+                } else {
+                    if (other.follows(upperRightCorner) && other.precedes(lowerLeftCorner)) {
                         this.setPosition(other);
+                        map.changePosition(this, oldPosition);
+
                     }
                 }
-                map.changePosition(this,oldPosition);
             }
             case 1 -> {
                 this.setDirection(this.direction.next());
@@ -126,7 +140,7 @@ public class Animal{
             }
             case 4 -> {
                 Vector2d other = getPosition().subtract(Objects.requireNonNull(this.getDirection().toUnitVector()));
-                if(mapCheck){
+                if (mapCheck) {
                     if (other.getX() < x1) {
                         this.setPosition(this.position.add(new Vector2d(x2, 0)));
                     } else if (other.getY() < y1) {
@@ -138,24 +152,25 @@ public class Animal{
                     } else {
                         this.setPosition(this.position.add(Objects.requireNonNull(getDirection().toUnitVector())));
                     }
-                }
-                else{
-                    if(other.follows(upperRightCorner) && other.precedes(lowerLeftCorner)){
+                    map.changePosition(this, oldPosition);
+                } else {
+                    if (other.follows(upperRightCorner) && other.precedes(lowerLeftCorner)) {
                         this.setPosition(other);
+                        map.changePosition(this, oldPosition);
+
                     }
                 }
-                map.changePosition(this,oldPosition);
             }
-            case 5 ->{
+            case 5 -> {
                 this.setDirection(this.direction.previous());
-                this.setDirection(this.direction.previous());
-                this.setDirection(this.direction.previous());
-            }
-            case 6 ->{
                 this.setDirection(this.direction.previous());
                 this.setDirection(this.direction.previous());
             }
-            case 7 ->{
+            case 6 -> {
+                this.setDirection(this.direction.previous());
+                this.setDirection(this.direction.previous());
+            }
+            case 7 -> {
                 this.setDirection(this.direction.previous());
             }
         }

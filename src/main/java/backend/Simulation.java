@@ -17,6 +17,7 @@ public class Simulation implements Runnable {
         while (true) {
             if (this.map.isMapRunning()) {
             try {
+                    map.incrementEpochNumber();
                     map.removeDeadAnimals();
                     map.moveAnimals();
                     map.feedAnimals();

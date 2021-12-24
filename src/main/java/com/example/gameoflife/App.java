@@ -89,8 +89,6 @@ public class App extends Application {
         Thread mapNoBordersThread = new Thread(new Simulation(mapNoBorders, leftGrid));
         mapNoBordersThread.start();
         mapWithBordersThread.start();
-//        Thread forTests = new Thread(new Testing("a"));
-//        forTests.start();
     }
 
 

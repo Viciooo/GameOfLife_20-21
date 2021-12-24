@@ -15,7 +15,6 @@ public class Simulation implements Runnable {
     @Override
     public void run() {
         while (true) {
-//            System.out.println(this.map.isMapRunning());
             if (this.map.isMapRunning()) {
             try {
                     map.removeDeadAnimals();

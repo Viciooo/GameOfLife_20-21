@@ -14,7 +14,13 @@ private double avgAnimalsEnergy;
 private double avgAnimalLifeSpan;
 private double avgAnimalChildrenAmount;
 
-//    to be shown on chart end
+    public synchronized int getAnimalsAmount() {return animalsAmount;}
+    public synchronized int getPlantsAmount() {return plantsAmount;}
+    public synchronized int[] getGenomDominant() {return genomDominant;}
+    public synchronized double getAvgAnimalsEnergy() {return avgAnimalsEnergy;}
+    public synchronized double getAvgAnimalLifeSpan() {return avgAnimalLifeSpan;}
+    public synchronized double getAvgAnimalChildrenAmount() {return avgAnimalChildrenAmount;}
+    //    to be shown on chart end
 
     private final int width;
     private final int height;
@@ -22,7 +28,7 @@ private double avgAnimalChildrenAmount;
     private final double startEnergy;
     private final double moveEnergy;
     private final double jungleRatio;
-    private double plantEnergy;
+    private final double plantEnergy;
     private ConcurrentHashMap<Vector2d,TreeSet<Animal>> animals;
     private ConcurrentHashMap<Vector2d,Grass> grasses;
     private boolean isMapRunning;
@@ -38,7 +44,6 @@ private double avgAnimalChildrenAmount;
     };
     private Vector2d jungleLeftLowerCorner;
     private Vector2d jungleRightUpperCorner;
-    private ArrayList<Vector2d> allPositions;
     private final ArrayList<Animal> listOfAllAnimals;
 
     public Map(int animalsAmount, int width, int height, double jungleRatio, boolean hasBorders, double startEnergy, double moveEnergy, double plantEnergy, boolean isMapRunning) {
@@ -55,7 +60,6 @@ private double avgAnimalChildrenAmount;
         animals = new ConcurrentHashMap<>();
         listOfAllAnimals = new ArrayList<>();
         createJungleAndSavannaBoundries();
-        createAllPositions();
         spawnAllAnimals();
     }
     public void createJungleAndSavannaBoundries() {
@@ -76,15 +80,6 @@ private double avgAnimalChildrenAmount;
         this.jungleRightUpperCorner = new Vector2d(savannaWidth + jungleWidth, savannaHeight + jungleHeight);
     }
 
-    public void createAllPositions() {
-        this.allPositions = new ArrayList<>();
-        for (int x = 0; x <= this.width; x++) {
-            for (int y = 0; y <= this.height; y++) {
-                this.allPositions.add(new Vector2d(x, y));
-            }
-        }
-    }
-
     public void spawnAllAnimals() {
         Random rand = new Random();
         for (int i = 0; i < animalsAmount; i++) {
@@ -94,7 +89,6 @@ private double avgAnimalChildrenAmount;
                 genes[j] = rand.nextInt(8);
             }
             Animal newAnimal = new Animal(startEnergy, possibleMapDirections[rand.nextInt(8)], genes, moveEnergy, this, position);
-            System.out.println(newAnimal);
             spawnAnimal(newAnimal);
         }
     }
@@ -138,9 +132,6 @@ private double avgAnimalChildrenAmount;
         this.isMapRunning = !this.isMapRunning;
     }
 
-    public void removeAnimal() {
-        this.animalsAmount--;
-    }
 
     public int getWidth() {
         return width;
@@ -333,7 +324,7 @@ private double avgAnimalChildrenAmount;
         for(Animal animal: animalsToRemove){
             listOfAllAnimals.remove(animal);
             animals.get(animal.getPosition()).remove(animal);
-            removeAnimal();
+            animalsAmount--;
         }
     }
 

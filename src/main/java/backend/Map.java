@@ -6,23 +6,22 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Map {
 //    to be shown on chart
-
     private int animalsAmount;
     private int plantsAmount = 0;
-    private ArrayList<Integer> genomDominant;
-    private int genomDominantCnt;
+    private ArrayList<Integer> genomeDominant;
+    private int genomeDominantCnt;
     private double avgAnimalLifeSpan;
     private int deadAnimalsCnt;
     private double avgAnimalChildrenAmount;
-    private ConcurrentHashMap<ArrayList<Integer>,Integer> genomMap;
+    private ConcurrentHashMap<ArrayList<Integer>,Integer> genomeMap;
 
-    public void updateGenomMap(Animal animal){
-        if (genomMap.get(animal.getGenes()) != null) {
-            int value = genomMap.get(animal.getGenes());
+    public void updateGenomeMap(Animal animal){
+        if (genomeMap.get(animal.getGenes()) != null) {
+            int value = genomeMap.get(animal.getGenes());
             value++;
-            genomMap.replace(animal.getGenes(),value);
+            genomeMap.replace(animal.getGenes(),value);
         }else{
-            genomMap.put(animal.getGenes(),1);
+            genomeMap.put(animal.getGenes(),1);
         }
     }
 
@@ -53,8 +52,8 @@ public class Map {
         return plantsAmount;
     }
 
-    public synchronized ArrayList<Integer> getGenomDominant() {
-        return genomDominant;
+    public synchronized ArrayList<Integer> getGenomeDominant() {
+        return genomeDominant;
     }
 
     public synchronized double getAvgAnimalsEnergy() {
@@ -122,21 +121,21 @@ public class Map {
         this.plantEnergy = plantEnergy;
         animals = new ConcurrentHashMap<>();
         listOfAllAnimals = new ArrayList<>();
-        createJungleAndSavannaBoundries();
-        this.genomMap = new ConcurrentHashMap<>();
-        this.genomDominant = new ArrayList<>();
-        this.genomDominantCnt = 0;
+        createJungleAndSavannaBoundaries();
+        this.genomeMap = new ConcurrentHashMap<>();
+        this.genomeDominant = new ArrayList<>();
+        this.genomeDominantCnt = 0;
         this.deadAnimalsCnt = 0;
-        ArrayList<Integer> testGenes = new ArrayList<>();
-        for(int i = 0;i<32;i++){
-            testGenes.add(1);
-        }
-        Animal testAnimal = new Animal(startEnergy,MapDirection.N,testGenes,moveEnergy,this,new Vector2d(0,0));
-        spawnAnimal(testAnimal);
+//        ArrayList<Integer> testGenes = new ArrayList<>();
+//        for(int i = 0;i<32;i++){
+//            testGenes.add(1);
+//        }
+//        Animal testAnimal = new Animal(startEnergy,MapDirection.N,testGenes,moveEnergy,this,new Vector2d(0,0));
+//        spawnAnimal(testAnimal);
         spawnAllAnimals();
     }
 
-    public void createJungleAndSavannaBoundries() {
+    public void createJungleAndSavannaBoundaries() {
         double jungleArea = width * height / (1 + 1 / jungleRatio);
         int jungleWidth = (int) Math.sqrt(jungleArea);
         int jungleHeight = (int) Math.sqrt(jungleArea);
@@ -181,9 +180,9 @@ public class Map {
             animals.get(animal.getPosition()).add(animal);
         }
         listOfAllAnimals.add(animal);
-        updateGenomMap(animal);
-        if(genomMap.get(animal.getGenes()) > genomDominantCnt){
-            genomDominantCnt = genomMap.get(animal.getGenes());
+        updateGenomeMap(animal);
+        if(genomeMap.get(animal.getGenes()) > genomeDominantCnt){
+            genomeDominantCnt = genomeMap.get(animal.getGenes());
         }
     }
 
@@ -311,7 +310,7 @@ public class Map {
                         mommy.getPosition()
                 );
                 spawnAnimal(child);
-                updateGenomMap(child);
+                updateGenomeMap(child);
                 birthUpdateFor_avgAnimalChildrenAmount();
             }
         }

@@ -74,7 +74,7 @@ public class ChartHandler {
             grassSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getPlantsAmount()));
             energySeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getAvgAnimalsEnergy()));
             lifeSpanSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getAvgAnimalLifeSpan()));
-            childrenAmountSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getAvgAnimalLifeSpan()));
+            childrenAmountSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getAvgAnimalChildrenAmount()));
         });
         lineChart.getData().add(animalSeries);
         lineChart.getData().add(grassSeries);

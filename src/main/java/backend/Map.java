@@ -185,6 +185,7 @@ public class Map {
         updateGenomeMap(animal);
         if (genomeMap.get(animal.getGenes()) > genomeDominantCnt) {
             genomeDominantCnt = genomeMap.get(animal.getGenes());
+            genomeDominant = animal.getGenes();
         }
     }
 

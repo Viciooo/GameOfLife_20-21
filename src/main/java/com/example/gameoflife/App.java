@@ -82,14 +82,18 @@ public class App extends Application {
 
         GridHandler leftGrid = new GridHandler(mapNoBorders);
         ChartHandler leftChart = new ChartHandler(mapNoBorders);
+        GenomeDominantHandler leftGenomeDominant = new GenomeDominantHandler(mapNoBorders);
+
         GridHandler rightGrid = new GridHandler(mapWithBorders);
         ChartHandler rightChart = new ChartHandler(mapWithBorders);
-        leftVbox.getChildren().addAll(leftGrid.getGridPane(), leftChart.createChart());
-        rightVbox.getChildren().addAll(rightGrid.getGridPane(), rightChart.createChart());
+        GenomeDominantHandler rightGenomeDominant = new GenomeDominantHandler(mapWithBorders);
+
+        leftVbox.getChildren().addAll(leftGrid.getGridPane(), leftChart.createChart(),leftGenomeDominant.createLabel());
+        rightVbox.getChildren().addAll(rightGrid.getGridPane(), rightChart.createChart(),rightGenomeDominant.createLabel());
         stg.setScene(new Scene(buttonsAndBoardsContainer, 500, 500));
         stg.setResizable(true);
-        Thread mapWithBordersThread = new Thread(new Simulation(mapWithBorders, rightGrid, rightChart));
-        Thread mapNoBordersThread = new Thread(new Simulation(mapNoBorders, leftGrid, leftChart));
+        Thread mapWithBordersThread = new Thread(new Simulation(mapWithBorders, rightGrid, rightChart,rightGenomeDominant));
+        Thread mapNoBordersThread = new Thread(new Simulation(mapNoBorders, leftGrid, leftChart,leftGenomeDominant));
         mapNoBordersThread.start();
         mapWithBordersThread.start();
     }

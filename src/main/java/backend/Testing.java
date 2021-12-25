@@ -9,7 +9,7 @@ public class Testing implements Runnable {
 
     @Override
     public void run() {
-        while(true){
+        while (true) {
             System.out.println(message);
             try {
                 Thread.sleep(3);

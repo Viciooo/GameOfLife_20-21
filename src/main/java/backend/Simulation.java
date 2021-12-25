@@ -20,7 +20,7 @@ public class Simulation implements Runnable {
     public void run() {
         while (true) {
             if (this.map.isMapRunning()) {
-            try {
+                try {
                     map.incrementEpochNumber();
                     map.removeDeadAnimals();
                     map.moveAnimals();
@@ -30,7 +30,7 @@ public class Simulation implements Runnable {
                     gridHandler.refreshMap();
                     chartHandler.refreshChart();
                     Thread.sleep(300);
-                } catch(Throwable e){
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
             }

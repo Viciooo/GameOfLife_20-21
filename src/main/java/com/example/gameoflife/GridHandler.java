@@ -67,7 +67,7 @@ public class GridHandler {
                             cell.setFitHeight(60);
                             gridPane.add(cell, i, j);
                             GridPane.setConstraints(cell, i, j);
-                            if(i==0){
+                            if (i == 0) {
                                 System.out.println(renderedPosition);
                             }
                         } catch (FileNotFoundException e) {

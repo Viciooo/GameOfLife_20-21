@@ -66,14 +66,14 @@ public class App extends Application {
     }
 
 
-    public void mapsInit(){
+    public void mapsInit() {
         VBox leftVbox = new VBox(new Text(mapNoBorders.toString()));
         VBox rightVbox = new VBox(new Text(mapWithBorders.toString()));
         Button startStopLeft = new Button("start/stop");
         Button startStopRight = new Button("start/stop");
-        HBox boards = new HBox(leftVbox,rightVbox);
-        HBox buttonsContainer = new HBox(startStopLeft,startStopRight);
-        VBox buttonsAndBoardsContainer = new VBox(boards,buttonsContainer);
+        HBox boards = new HBox(leftVbox, rightVbox);
+        HBox buttonsContainer = new HBox(startStopLeft, startStopRight);
+        VBox buttonsAndBoardsContainer = new VBox(boards, buttonsContainer);
 
         startStopLeft.setOnAction(event -> {
             this.mapNoBorders.swapRunning();
@@ -84,12 +84,12 @@ public class App extends Application {
         ChartHandler leftChart = new ChartHandler(mapNoBorders);
         GridHandler rightGrid = new GridHandler(mapWithBorders);
         ChartHandler rightChart = new ChartHandler(mapWithBorders);
-        leftVbox.getChildren().addAll(leftGrid.getGridPane(),leftChart.createChart());
-        rightVbox.getChildren().addAll(rightGrid.getGridPane(),rightChart.createChart());
-        stg.setScene(new Scene(buttonsAndBoardsContainer,500,500));
+        leftVbox.getChildren().addAll(leftGrid.getGridPane(), leftChart.createChart());
+        rightVbox.getChildren().addAll(rightGrid.getGridPane(), rightChart.createChart());
+        stg.setScene(new Scene(buttonsAndBoardsContainer, 500, 500));
         stg.setResizable(true);
-        Thread mapWithBordersThread = new Thread(new Simulation(mapWithBorders, rightGrid,rightChart));
-        Thread mapNoBordersThread = new Thread(new Simulation(mapNoBorders, leftGrid,leftChart));
+        Thread mapWithBordersThread = new Thread(new Simulation(mapWithBorders, rightGrid, rightChart));
+        Thread mapNoBordersThread = new Thread(new Simulation(mapNoBorders, leftGrid, leftChart));
         mapNoBordersThread.start();
         mapWithBordersThread.start();
     }
@@ -112,6 +112,7 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
     public static void main(String[] args) {
         launch();
     }

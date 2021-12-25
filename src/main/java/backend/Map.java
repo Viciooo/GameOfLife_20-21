@@ -10,8 +10,9 @@ public class Map {
     private int animalsAmount;
     private int plantsAmount = 0;
     private ArrayList<Integer> genomDominant;
+    private int genomDominantCnt;
     private double avgAnimalLifeSpan;
-    private int deadAnimalsCnt = 0;
+    private int deadAnimalsCnt;
     private double avgAnimalChildrenAmount;
     private ConcurrentHashMap<ArrayList<Integer>,Integer> genomMap;
 
@@ -24,11 +25,6 @@ public class Map {
             genomMap.put(animal.getGenes(),1);
         }
     }
-
-//    todo - update most common genom after each animal spawn
-//     at first -1,-1...,-1 genotype is most common so we can find the error easily
-
-
 
     public void addAgeOfDeadAnimalTo_avgAnimalLifeSpan(Animal animal){
         avgAnimalLifeSpan *= deadAnimalsCnt;
@@ -128,14 +124,16 @@ public class Map {
         listOfAllAnimals = new ArrayList<>();
         createJungleAndSavannaBoundries();
         this.genomMap = new ConcurrentHashMap<>();
-        spawnAllAnimals();
-
+        this.genomDominant = new ArrayList<>();
+        this.genomDominantCnt = 0;
+        this.deadAnimalsCnt = 0;
         ArrayList<Integer> testGenes = new ArrayList<>();
         for(int i = 0;i<32;i++){
-            testGenes.add(0);
+            testGenes.add(1);
         }
         Animal testAnimal = new Animal(startEnergy,MapDirection.N,testGenes,moveEnergy,this,new Vector2d(0,0));
         spawnAnimal(testAnimal);
+        spawnAllAnimals();
     }
 
     public void createJungleAndSavannaBoundries() {
@@ -184,6 +182,9 @@ public class Map {
         }
         listOfAllAnimals.add(animal);
         updateGenomMap(animal);
+        if(genomMap.get(animal.getGenes()) > genomDominantCnt){
+            genomDominantCnt = genomMap.get(animal.getGenes());
+        }
     }
 
     public void place(Animal animal) {
@@ -374,9 +375,6 @@ public class Map {
             int x = ThreadLocalRandom.current().nextInt(0, width+1);
             int y = ThreadLocalRandom.current().nextInt(0, height+1);
             Vector2d grassProposition = new Vector2d(x, y);
-//            if(x == 0){
-////                System.out.println(grassProposition.toString());
-//            }
             i++;
             if (grasses.get(grassProposition) == null && animals.get(grassProposition) == null) {
                 if (isInJungle(grassProposition) && !jungleGrassPlaced) {
@@ -416,4 +414,8 @@ public class Map {
         }
     }
 
+    @Override
+    public String toString() {
+        return !hasBorders ? "No borders map" : "Map with borders";
+    }
 }

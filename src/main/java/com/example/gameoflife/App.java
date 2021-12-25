@@ -3,6 +3,7 @@ package com.example.gameoflife;
 import backend.Map;
 import backend.Simulation;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -66,8 +67,8 @@ public class App extends Application {
 
 
     public void mapsInit(){
-        VBox leftVbox = new VBox(new Text("Map with no borders"));
-        VBox rightVbox = new VBox(new Text("Map with borders"));
+        VBox leftVbox = new VBox(new Text(mapNoBorders.toString()));
+        VBox rightVbox = new VBox(new Text(mapWithBorders.toString()));
         Button startStopLeft = new Button("start/stop");
         Button startStopRight = new Button("start/stop");
         HBox boards = new HBox(leftVbox,rightVbox);
@@ -80,13 +81,15 @@ public class App extends Application {
         startStopRight.setOnAction(event -> this.mapWithBorders.swapRunning());
 
         GridHandler leftGrid = new GridHandler(mapNoBorders);
+        ChartHandler leftChart = new ChartHandler(mapNoBorders);
         GridHandler rightGrid = new GridHandler(mapWithBorders);
-        leftVbox.getChildren().add(leftGrid.getGridPane());
-        rightVbox.getChildren().add(rightGrid.getGridPane());
+        ChartHandler rightChart = new ChartHandler(mapWithBorders);
+        leftVbox.getChildren().addAll(leftGrid.getGridPane(),leftChart.createChart());
+        rightVbox.getChildren().addAll(rightGrid.getGridPane(),rightChart.createChart());
         stg.setScene(new Scene(buttonsAndBoardsContainer,500,500));
         stg.setResizable(true);
-        Thread mapWithBordersThread = new Thread(new Simulation(mapWithBorders, rightGrid));
-        Thread mapNoBordersThread = new Thread(new Simulation(mapNoBorders, leftGrid));
+        Thread mapWithBordersThread = new Thread(new Simulation(mapWithBorders, rightGrid,rightChart));
+        Thread mapNoBordersThread = new Thread(new Simulation(mapNoBorders, leftGrid,leftChart));
         mapNoBordersThread.start();
         mapWithBordersThread.start();
     }
@@ -95,6 +98,10 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         stg = stage;
+        stg.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
         FXMLLoader loader = new FXMLLoader();
         Parent root = loader.load(new FileInputStream("src/main/resources/Main.fxml"));
         Scene scene = new Scene(root);

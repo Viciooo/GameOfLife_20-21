@@ -5,47 +5,47 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-
-class LineChartSample extends Application {
-
-    @Override public void start(Stage stage) {
-        stage.setTitle("Line Chart Sample");
-        //defining the axes
-        final NumberAxis xAxis = new NumberAxis();
-        final NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Number of Month");
-        //creating the chart
-        final LineChart<Number,Number> lineChart =
-                new LineChart<Number,Number>(xAxis,yAxis);
-
-        lineChart.setTitle("Stock Monitoring, 2010");
-        //defining a series
-        XYChart.Series series = new XYChart.Series();
-        series.setName("My portfolio");
-        //populating the series with data
-        series.getData().add(new XYChart.Data(1, 23));
-        series.getData().add(new XYChart.Data(2, 14));
-        series.getData().add(new XYChart.Data(3, 15));
-        series.getData().add(new XYChart.Data(4, 24));
-        series.getData().add(new XYChart.Data(5, 34));
-        series.getData().add(new XYChart.Data(6, 36));
-        series.getData().add(new XYChart.Data(7, 22));
-        series.getData().add(new XYChart.Data(8, 45));
-        series.getData().add(new XYChart.Data(9, 43));
-        series.getData().add(new XYChart.Data(10, 17));
-        series.getData().add(new XYChart.Data(11, 29));
-        series.getData().add(new XYChart.Data(12, 25));
-
-        Scene scene  = new Scene(lineChart,800,600);
-        lineChart.getData().add(series);
-
-        stage.setScene(scene);
-        stage.show();
-    }
+public class test extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("LineChart Experiments");
+
+        NumberAxis xAxis = new NumberAxis();
+        xAxis.setLabel("Number of epoch");
+
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Population");
+
+        LineChart lineChart = new LineChart(xAxis, yAxis);
+
+        XYChart.Series dataSeries1 = new XYChart.Series();
+        dataSeries1.setName("Population analysis for no borders map");
+
+        dataSeries1.getData().add(new XYChart.Data( 1, 567));
+        dataSeries1.getData().add(new XYChart.Data( 5, 612));
+        dataSeries1.getData().add(new XYChart.Data(10, 800));
+        dataSeries1.getData().add(new XYChart.Data(20, 780));
+        dataSeries1.getData().add(new XYChart.Data(40, 810));
+        dataSeries1.getData().add(new XYChart.Data(80, 850));
+
+        lineChart.getData().add(dataSeries1);
+
+        VBox vbox = new VBox(lineChart);
+
+        Scene scene = new Scene(vbox, 400, 200);
+
+        primaryStage.setScene(scene);
+        primaryStage.setHeight(300);
+        primaryStage.setWidth(1200);
+
+        primaryStage.show();
     }
 }

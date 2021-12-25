@@ -18,8 +18,8 @@ public class GenomeDominantHandler {
     }
 
     public void refreshLabel(){
-        Platform.runLater(() -> {
+//        Platform.runLater(() -> {
             genomeDominant.setText("Most popular genome: "+map.getGenomeDominant().toString());
-        });
+//        });
     }
 }

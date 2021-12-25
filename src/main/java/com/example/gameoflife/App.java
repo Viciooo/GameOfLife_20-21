@@ -6,9 +6,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -73,7 +75,14 @@ public class App extends Application {
         Button startStopRight = new Button("start/stop");
         HBox boards = new HBox(leftVbox, rightVbox);
         HBox buttonsContainer = new HBox(startStopLeft, startStopRight);
+        boards.setAlignment(Pos.CENTER);
+        boards.setSpacing(200);
+        leftVbox.setSpacing(10);
+        rightVbox.setSpacing(10);
         VBox buttonsAndBoardsContainer = new VBox(boards, buttonsContainer);
+        ScrollPane wholeWindow = new ScrollPane(buttonsAndBoardsContainer);
+        wholeWindow.setFitToWidth(true);
+        wholeWindow.setFitToHeight(true);
 
         startStopLeft.setOnAction(event -> {
             this.mapNoBorders.swapRunning();
@@ -102,7 +111,7 @@ public class App extends Application {
                 rightGenomeDominant.createLabel(),
                 leftTrackedAnimal.createLabel());
 
-        stg.setScene(new Scene(buttonsAndBoardsContainer));
+        stg.setScene(new Scene(wholeWindow));
         stg.setResizable(true);
         stg.setMaximized(true);
 

@@ -1,13 +1,11 @@
 package backend;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Map {
-    //    to be shown on chart
     private int animalsAmount;
-    private int plantsAmount = 0;
+    private int plantsAmount;
     private ArrayList<Integer> genomeDominant;
     private int genomeDominantCnt;
     private double avgAnimalLifeSpan;
@@ -15,76 +13,6 @@ public class Map {
     private double avgAnimalChildrenAmount;
     private ConcurrentHashMap<ArrayList<Integer>, Integer> genomeMap;
 
-    public void updateGenomeMap(Animal animal) {
-        if (genomeMap.get(animal.getGenes()) != null) {
-            int value = genomeMap.get(animal.getGenes());
-            value++;
-            genomeMap.replace(animal.getGenes(), value);
-        } else {
-            genomeMap.put(animal.getGenes(), 1);
-        }
-    }
-
-    public void addAgeOfDeadAnimalTo_avgAnimalLifeSpan(Animal animal) {
-        avgAnimalLifeSpan *= deadAnimalsCnt;
-        avgAnimalLifeSpan += this.epochNumber - animal.getEpochOfBirth();
-        deadAnimalsCnt++;
-        avgAnimalLifeSpan /= deadAnimalsCnt;
-    }
-
-    public void birthUpdateFor_avgAnimalChildrenAmount() {
-        avgAnimalChildrenAmount *= animalsAmount;
-        avgAnimalChildrenAmount += 2;
-        animalsAmount++;
-        avgAnimalChildrenAmount /= animalsAmount;
-    }
-
-    public void deathOfAnimalUpdateFor_avgAnimalChildrenAmount(Animal animal) {
-        avgAnimalChildrenAmount *= animalsAmount;
-        avgAnimalChildrenAmount -= animal.getChildrenAmount();
-        animalsAmount--;
-        avgAnimalChildrenAmount /= animalsAmount;
-    }
-
-    public synchronized int getAnimalsAmount() {
-        return animalsAmount;
-    }
-
-    public synchronized int getPlantsAmount() {
-        return plantsAmount;
-    }
-
-    public synchronized ArrayList<Integer> getGenomeDominant() {
-        return genomeDominant;
-    }
-
-    public synchronized double getAvgAnimalsEnergy() {
-        double avgAnimalsEnergy = 0;
-        for (Animal animal : listOfAllAnimals) {
-            avgAnimalsEnergy += animal.getEnergy();
-        }
-        avgAnimalsEnergy /= listOfAllAnimals.size();
-        return avgAnimalsEnergy;
-    }
-
-    public synchronized double getAvgAnimalLifeSpan() {
-        return avgAnimalLifeSpan;
-    }
-
-    public synchronized double getAvgAnimalChildrenAmount() {
-        return avgAnimalChildrenAmount;
-    }
-    //    to be shown on chart end
-
-    private int epochNumber = 0;
-
-    public synchronized int getEpochNumber() {
-        return this.epochNumber;
-    }
-
-    public synchronized void incrementEpochNumber() {
-        this.epochNumber++;
-    }
 
     private final int width;
     private final int height;
@@ -128,19 +56,91 @@ public class Map {
         this.genomeDominant = new ArrayList<>();
         this.genomeDominantCnt = 0;
         this.deadAnimalsCnt = 0;
+        this.plantsAmount = 0;
 //        ArrayList<Integer> testGenes = new ArrayList<>();
 //        for(int i = 0;i<32;i++){
-//            testGenes.add(1);
+//            testGenes.add(0);
 //        }
-//        Animal testAnimal = new Animal(startEnergy,MapDirection.N,testGenes,moveEnergy,this,new Vector2d(0,0));
+//        Animal testAnimal = new Animal(startEnergy,MapDirection.E,testGenes,moveEnergy,this,new Vector2d(0,0));
 //        spawnAnimal(testAnimal);
         spawnAllAnimals();
     }
 
-    public ArrayList<Animal> getListOfAllAnimals() {
-        return listOfAllAnimals;
+    //chart functions
+
+    public void updateGenomeMap(Animal animal) {
+        if (genomeMap.get(animal.getGenes()) != null) {
+            int value = genomeMap.get(animal.getGenes());
+            value++;
+            genomeMap.replace(animal.getGenes(), value);
+        } else {
+            genomeMap.put(animal.getGenes(), 1);
+        }
     }
 
+    public void addAgeOfDeadAnimalTo_avgAnimalLifeSpan(Animal animal) {
+        avgAnimalLifeSpan *= deadAnimalsCnt;
+        avgAnimalLifeSpan += this.epochNumber - animal.getEpochOfBirth();
+        deadAnimalsCnt++;
+        avgAnimalLifeSpan /= deadAnimalsCnt;
+    }
+
+    public void birthUpdateFor_avgAnimalChildrenAmount() {
+        avgAnimalChildrenAmount *= animalsAmount;
+        avgAnimalChildrenAmount += 2;
+        animalsAmount++;
+        avgAnimalChildrenAmount /= animalsAmount;
+    }
+
+    public void deathOfAnimalUpdateFor_avgAnimalChildrenAmount(Animal animal) {
+        avgAnimalChildrenAmount *= animalsAmount;
+        avgAnimalChildrenAmount -= animal.getChildrenAmount();
+        animalsAmount--;
+        avgAnimalChildrenAmount /= animalsAmount;
+    }
+
+    public int getAnimalsAmount() {
+        return animalsAmount;
+    }
+
+    public int getPlantsAmount() {
+        return plantsAmount;
+    }
+
+    public ArrayList<Integer> getGenomeDominant() {
+        return genomeDominant;
+    }
+
+    public double getAvgAnimalsEnergy() {
+        double avgAnimalsEnergy = 0;
+        for (Animal animal : listOfAllAnimals) {
+            avgAnimalsEnergy += animal.getEnergy();
+        }
+        avgAnimalsEnergy /= listOfAllAnimals.size();
+        return avgAnimalsEnergy;
+    }
+
+    public double getAvgAnimalLifeSpan() {
+        return avgAnimalLifeSpan;
+    }
+
+    public double getAvgAnimalChildrenAmount() {
+        return avgAnimalChildrenAmount;
+    }
+
+    private int epochNumber = 0;
+
+    public int getEpochNumber() {
+        return this.epochNumber;
+    }
+
+    public void incrementEpochNumber() {
+        this.epochNumber++;
+    }
+
+    //chart functions end
+
+    //    map creation functions
     public void createJungleAndSavannaBoundaries() {
         double jungleArea = width * height / (1 + 1 / jungleRatio);
         int jungleWidth = (int) Math.sqrt(jungleArea);
@@ -157,6 +157,7 @@ public class Map {
         int savannaWidth = (width - jungleWidth) / 2;
         this.jungleLeftLowerCorner = new Vector2d(savannaWidth, savannaHeight);
         this.jungleRightUpperCorner = new Vector2d(savannaWidth + jungleWidth, savannaHeight + jungleHeight);
+        System.out.println(width + " / " + height + " / " + jungleLeftLowerCorner + " / " + jungleRightUpperCorner);
     }
 
     public void spawnAllAnimals() {
@@ -192,6 +193,8 @@ public class Map {
             genomeDominant = animal.getGenes();
         }
     }
+//    map creation functions
+
 
     public void place(Animal animal) {
         if (animals.get(animal.getPosition()) == null) {
@@ -207,28 +210,6 @@ public class Map {
             animals.get(animal.getPosition()).add(animal);
         }
     }
-
-    public synchronized boolean isMapRunning() {
-        return this.isMapRunning;
-    }
-
-    public synchronized void swapRunning() {
-        this.isMapRunning = !this.isMapRunning;
-    }
-
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public boolean getHasBorders() {
-        return hasBorders;
-    }
-
 
     public ArrayList<Animal> findAllStrongestAtPosition(Vector2d position) {
         ArrayList<Animal> strongestAnimals = new ArrayList<>();
@@ -317,7 +298,7 @@ public class Map {
                         mommy.getPosition()
                 );
                 spawnAnimal(child);
-                updateGenomeMap(child);
+//                updateGenomeMap(child);
                 birthUpdateFor_avgAnimalChildrenAmount();
             }
         }
@@ -351,54 +332,107 @@ public class Map {
         return position.precedes(jungleLeftLowerCorner) && position.follows(jungleRightUpperCorner);
     }
 
-    public synchronized void feedAnimals() {
+
+    public void setPlantsAmount(int plantsAmount) {
+        this.plantsAmount = plantsAmount;
+    }
+
+
+    public ConcurrentHashMap<Vector2d, TreeSet<Animal>> getAnimals() {
+        return animals;
+    }
+
+    public ConcurrentHashMap<Vector2d, Grass> getGrasses() {
+        return grasses;
+    }
+
+    public synchronized boolean isMapRunning() {
+        return this.isMapRunning;
+    }
+
+    public synchronized void swapRunning() {
+        this.isMapRunning = !this.isMapRunning;
+    }
+
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public boolean getHasBorders() {
+        return hasBorders;
+    }
+
+
+    @Override
+    public String toString() {
+        return !hasBorders ? "No borders map" : "Map with borders";
+    }
+
+    public  ArrayList<Animal> getStrongestAnimalsOnTheMap() {
+        ArrayList<Animal> strongestOnMap = new ArrayList<>();
+        for (TreeSet<Animal> animalTreeSet : animals.values()) {
+            strongestOnMap.add(animalTreeSet.first());
+        }
+        return strongestOnMap;
+    }
+
+    public ArrayList<Animal> getListOfAllAnimals() {
+        return listOfAllAnimals;
+    }
+
+    public void feedAnimals() {
         ArrayList<Vector2d> grassToRemove = new ArrayList<>();
-        for (Vector2d vector2d : grasses.keySet()) {
+        for (Vector2d vector2d : getGrasses().keySet()) {
             grassToRemove.add(feedAnimalsAtPosition(vector2d));
         }
         if (grassToRemove.size() > 0) {
             for (Vector2d g : grassToRemove) {
                 if (g != null) {
-                    grasses.remove(g);
-                    plantsAmount--;
+                    getGrasses().remove(g);
+                    setPlantsAmount(getPlantsAmount() - 1);
                 }
             }
         }
 
     }
 
-    public synchronized void reproduceAnimals() {
-        for (Vector2d position : animals.keySet()) {
+    public void reproduceAnimals() {
+        for (Vector2d position : getAnimals().keySet()) {
             reproduceAnimalsAtPosition(position);
         }
     }
 
-    public synchronized void addPlants() {
+    public void addPlants() {
         boolean jungleGrassPlaced = false;
         boolean savannaGrassPlaced = false;
         int i = 0;
-        while ((!jungleGrassPlaced || !savannaGrassPlaced) && i < width * height * 10) {
-            int x = ThreadLocalRandom.current().nextInt(0, width + 1);
-            int y = ThreadLocalRandom.current().nextInt(0, height + 1);
+        while ((!jungleGrassPlaced || !savannaGrassPlaced) && i < getWidth() * getHeight() * 10) {
+            int x = ThreadLocalRandom.current().nextInt(0, getWidth() + 1);
+            int y = ThreadLocalRandom.current().nextInt(0, getHeight() + 1);
             Vector2d grassProposition = new Vector2d(x, y);
             i++;
-            if (grasses.get(grassProposition) == null && animals.get(grassProposition) == null) {
+            if (getGrasses().get(grassProposition) == null && getAnimals().get(grassProposition) == null) {
                 if (isInJungle(grassProposition) && !jungleGrassPlaced) {
-                    grasses.put(grassProposition, new Grass());
+                    getGrasses().put(grassProposition, new Grass());
                     jungleGrassPlaced = true;
-                    plantsAmount++;
+                    setPlantsAmount(getPlantsAmount() + 1);
                 } else if (!isInJungle(grassProposition) && !savannaGrassPlaced) {
-                    grasses.put(grassProposition, new Grass());
+                    getGrasses().put(grassProposition, new Grass());
                     savannaGrassPlaced = true;
-                    plantsAmount++;
+                    setPlantsAmount(getPlantsAmount() + 1);
                 }
             }
         }
     }
 
-    public synchronized void removeDeadAnimals() {
+    public void removeDeadAnimals() {
         ArrayList<Animal> animalsToRemove = new ArrayList<>();
-        for (TreeSet<Animal> animalsAtPosition : animals.values()) {
+        for (TreeSet<Animal> animalsAtPosition : getAnimals().values()) {
             for (Animal animal : animalsAtPosition) {
                 if (animal.isDead()) {
                     animalsToRemove.add(animal);
@@ -407,29 +441,18 @@ public class Map {
         }
         for (Animal animal : animalsToRemove) {
             addAgeOfDeadAnimalTo_avgAnimalLifeSpan(animal);
-            listOfAllAnimals.remove(animal);
-            animals.get(animal.getPosition()).remove(animal);
+            getListOfAllAnimals().remove(animal);
+            getAnimals().get(animal.getPosition()).remove(animal);
             deathOfAnimalUpdateFor_avgAnimalChildrenAmount(animal);
         }
     }
 
-    public synchronized void moveAnimals() {
+    public void moveAnimals() {
         Random rand = new Random();
-        for (Animal animal : listOfAllAnimals) {
+        System.out.println(getListOfAllAnimals().toString());
+        for (Animal animal : getListOfAllAnimals()) {
             animal.move(animal.getGenes().get(rand.nextInt(32)));
         }
     }
 
-    @Override
-    public String toString() {
-        return !hasBorders ? "No borders map" : "Map with borders";
-    }
-
-    public synchronized ArrayList<Animal> getStrongestAnimalsOnTheMap(){
-        ArrayList<Animal> strongestOnMap = new ArrayList<>();
-        for(TreeSet<Animal> animalTreeSet: animals.values()){
-            strongestOnMap.add(animalTreeSet.first());
-        }
-        return strongestOnMap;
-    }
 }

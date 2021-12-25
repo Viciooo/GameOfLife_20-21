@@ -116,19 +116,51 @@ public class Animal {
             case 0 -> {
                 Vector2d other = getPosition().add((Objects.requireNonNull(this.getDirection().toUnitVector())));
                 if (!mapCheck) {
-                    if (other.getX() < x1) {
+
+                    if(other.getX() < x1 && other.getY() < y1){
                         this.setPosition(this.position.add(new Vector2d(x2, 0)));
-                    } else if (other.getY() < y1) {
                         this.setPosition(this.position.add(new Vector2d(0, y2)));
-                    } else if (other.getX() > x2) {
-                        this.setPosition(this.position.subtract(new Vector2d(x2, 0)));
-                    } else if (other.getY() > y2) {
+                    }
+
+                    else if(other.getX() < x1 && other.getY() > y2){
+                        this.setPosition(this.position.add(new Vector2d(x2, 0)));
                         this.setPosition(this.position.subtract(new Vector2d(0, y2)));
-                    } else {
+                    }
+
+                    else if(other.getX() > x2 && other.getY() < y1){
+                        this.setPosition(this.position.subtract(new Vector2d(x2, 0)));
+                        this.setPosition(this.position.add(new Vector2d(0, y2)));
+                    }
+
+                    else if(other.getX() > x2 && other.getY() > y2){
+                        this.setPosition(this.position.subtract(new Vector2d(x2, 0)));
+                        this.setPosition(this.position.subtract(new Vector2d(0, y2)));
+                    }
+
+                    else if (other.getX() < x1) {
+                        this.setPosition(this.position.add(new Vector2d(x2, 0)));
+                    }
+
+                    else if (other.getY() < y1) {
+                        this.setPosition(this.position.add(new Vector2d(0, y2)));
+                    }
+
+                    else if (other.getX() > x2) {
+                        this.setPosition(this.position.subtract(new Vector2d(x2, 0)));
+                    }
+
+                    else if (other.getY() > y2) {
+                        this.setPosition(this.position.subtract(new Vector2d(0, y2)));
+                    }
+
+                    else {
                         this.setPosition(this.position.add(Objects.requireNonNull(getDirection().toUnitVector())));
                     }
+
                     map.changePosition(this, oldPosition);
-                } else {
+                }
+
+                else {
                     if (other.follows(upperRightCorner) && other.precedes(lowerLeftCorner)) {
                         this.setPosition(other);
                         map.changePosition(this, oldPosition);
@@ -150,20 +182,53 @@ public class Animal {
             }
             case 4 -> {
                 Vector2d other = getPosition().subtract(Objects.requireNonNull(this.getDirection().toUnitVector()));
-                if (mapCheck) {
-                    if (other.getX() < x1) {
+                if (!mapCheck) {
+
+                    if(other.getX() < x1 && other.getY() < y1){
                         this.setPosition(this.position.add(new Vector2d(x2, 0)));
-                    } else if (other.getY() < y1) {
                         this.setPosition(this.position.add(new Vector2d(0, y2)));
-                    } else if (other.getX() > x2) {
-                        this.setPosition(this.position.subtract(new Vector2d(x2, 0)));
-                    } else if (other.getY() > y2) {
+                    }
+
+                    else if(other.getX() < x1 && other.getY() > y2){
+                        this.setPosition(this.position.add(new Vector2d(x2, 0)));
                         this.setPosition(this.position.subtract(new Vector2d(0, y2)));
-                    } else {
+                    }
+
+                    else if(other.getX() > x2 && other.getY() < y1){
+                        this.setPosition(this.position.subtract(new Vector2d(x2, 0)));
+                        this.setPosition(this.position.add(new Vector2d(0, y2)));
+                    }
+
+                    else if(other.getX() > x2 && other.getY() > y2){
+                        this.setPosition(this.position.subtract(new Vector2d(x2, 0)));
+                        this.setPosition(this.position.subtract(new Vector2d(0, y2)));
+                    }
+
+                    else if (other.getX() < x1) {
+                        this.setPosition(this.position.add(new Vector2d(x2, 0)));
+                    }
+
+                    else if (other.getY() < y1) {
+                        this.setPosition(this.position.add(new Vector2d(0, y2)));
+                    }
+
+                    else if (other.getX() > x2) {
+                        this.setPosition(this.position.subtract(new Vector2d(x2, 0)));
+                    }
+
+                    else if (other.getY() > y2) {
+                        this.setPosition(this.position.subtract(new Vector2d(0, y2)));
+                    }
+
+                    else {
                         this.setPosition(this.position.add(Objects.requireNonNull(getDirection().toUnitVector())));
                     }
+
                     map.changePosition(this, oldPosition);
-                } else {
+                }
+
+                else {
+
                     if (other.follows(upperRightCorner) && other.precedes(lowerLeftCorner)) {
                         this.setPosition(other);
                         map.changePosition(this, oldPosition);

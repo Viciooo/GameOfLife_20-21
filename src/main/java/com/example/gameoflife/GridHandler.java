@@ -36,18 +36,13 @@ public class GridHandler {
 
     public GridHandler(Map map) {
         this.map = map;
-        this.x = map.getWidth() + 1;
-        this.y = map.getHeight() + 1;
-        gridPane.setPadding(new Insets(5, 5, 5, 5));
-        gridPane.setGridLinesVisible(true);
+        this.x = map.getWidth();
+        this.y = map.getHeight();
         refreshMap();
         this.CELL_SIZE = 40;
     }
 
     private void clearGrid() {
-        gridPane.setGridLinesVisible(false);
-        gridPane.getColumnConstraints().clear();
-        gridPane.getRowConstraints().clear();
         gridPane.getChildren().clear();
 
         if(trackedAnimal != null && trackedAnimal.isDead()){
@@ -58,20 +53,9 @@ public class GridHandler {
     public void refreshMap() {
         Platform.runLater(() -> {
             clearGrid();
-            for (int i = 0; i < x; i++) {
-                ColumnConstraints columnConstraints = new ColumnConstraints(CELL_SIZE+5);
-                columnConstraints.setPercentWidth(100.0 / x);
-                gridPane.getColumnConstraints().add(columnConstraints);
-            }
 
-            for (int i = 0; i < y; i++) {
-                RowConstraints rowConstraints = new RowConstraints(CELL_SIZE+5);
-                rowConstraints.setPercentHeight(100.0 / y);
-                gridPane.getRowConstraints().add(rowConstraints);
-            }
-
-            for (int i = 0; i < y; i++) {
-                for (int j = 0; j < x; j++) {
+            for (int i = 0; i <= y; i++) {
+                for (int j = 0; j <= x; j++) {
                     Vector2d renderedPosition = new Vector2d(i, j);
                     if (map.objectAt(renderedPosition) instanceof Grass || map.objectAt(renderedPosition) instanceof Animal) {
                         try {
@@ -103,12 +87,8 @@ public class GridHandler {
                                     cellButton.setGraphic(cell);
                                 }
                                 gridPane.add(cellButton, i, j);
-                                GridPane.setConstraints(cellButton, i, j);
-                                GridPane.setHalignment(cellButton, HPos.CENTER);
                             }else{
                                 gridPane.add(cell, i, j);
-                                GridPane.setConstraints(cell, i, j);
-                                GridPane.setHalignment(cell, HPos.CENTER);
                             }
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -119,16 +99,15 @@ public class GridHandler {
                         newLabel.setMinWidth(CELL_SIZE);
                         newLabel.setMinHeight(CELL_SIZE);
                         if (map.isInJungle(renderedPosition)) {
+                            newLabel.setText(renderedPosition.toString());
                             newLabel.setStyle("-fx-background-color: #177320;");
                         } else {
+                            newLabel.setText(renderedPosition.toString());
                             newLabel.setStyle("-fx-background-color: #6bbf73;");
                         }
-                        GridPane.setHalignment(newLabel, HPos.CENTER);
                         gridPane.add(newLabel, i, j);
-                        GridPane.setConstraints(newLabel, i, j);
                     }
                 }
-                gridPane.setGridLinesVisible(true);
             }
         });
     }

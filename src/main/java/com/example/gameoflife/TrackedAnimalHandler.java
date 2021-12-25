@@ -7,8 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 public class TrackedAnimalHandler {
-    private Map map;
-    private Label info;
+    private final Map map;
+    private final Label info;
     public TrackedAnimalHandler(Map map) {
         this.map = map;
         this.info = new Label();
@@ -19,10 +19,10 @@ public class TrackedAnimalHandler {
     }
 
     public void refreshLabel(Animal animal) {
-        Platform.runLater(() -> {
+//        Platform.runLater(() -> {
             if(animal.isDead()){
                 info.setText("Died in the epoch " + map.getEpochNumber() + "\n Had "+animal.getChildrenAmount()+" children");
             }
-        });
+//        });
     }
 }

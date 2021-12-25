@@ -15,6 +15,7 @@ public class Animal {
     private final int epochOfBirth;
     private Vector2d position;
     private int childrenAmount = 0;
+    private boolean isTracked;
 
     public int getEpochOfBirth() {
         return epochOfBirth;
@@ -82,6 +83,15 @@ public class Animal {
         this.map = map;
         this.position = position;
         this.epochOfBirth = this.map.getEpochNumber();
+        this.isTracked = false;
+    }
+
+    public synchronized void swapIsTracked(){
+        this.isTracked = !isTracked;
+    }
+
+    public synchronized boolean isTracked() {
+        return isTracked;
     }
 
     public void dayPasses() {

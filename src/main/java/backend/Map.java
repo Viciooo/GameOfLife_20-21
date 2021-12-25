@@ -137,6 +137,10 @@ public class Map {
         spawnAllAnimals();
     }
 
+    public ArrayList<Animal> getListOfAllAnimals() {
+        return listOfAllAnimals;
+    }
+
     public void createJungleAndSavannaBoundaries() {
         double jungleArea = width * height / (1 + 1 / jungleRatio);
         int jungleWidth = (int) Math.sqrt(jungleArea);
@@ -419,5 +423,13 @@ public class Map {
     @Override
     public String toString() {
         return !hasBorders ? "No borders map" : "Map with borders";
+    }
+
+    public synchronized ArrayList<Animal> getStrongestAnimalsOnTheMap(){
+        ArrayList<Animal> strongestOnMap = new ArrayList<>();
+        for(TreeSet<Animal> animalTreeSet: animals.values()){
+            strongestOnMap.add(animalTreeSet.first());
+        }
+        return strongestOnMap;
     }
 }

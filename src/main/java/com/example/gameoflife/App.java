@@ -80,20 +80,46 @@ public class App extends Application {
         });
         startStopRight.setOnAction(event -> this.mapWithBorders.swapRunning());
 
+        TrackedAnimalHandler leftTrackedAnimal = new TrackedAnimalHandler(mapNoBorders);
         GridHandler leftGrid = new GridHandler(mapNoBorders);
         ChartHandler leftChart = new ChartHandler(mapNoBorders);
         GenomeDominantHandler leftGenomeDominant = new GenomeDominantHandler(mapNoBorders);
 
+        TrackedAnimalHandler rightTrackedAnimal = new TrackedAnimalHandler(mapNoBorders);
         GridHandler rightGrid = new GridHandler(mapWithBorders);
         ChartHandler rightChart = new ChartHandler(mapWithBorders);
         GenomeDominantHandler rightGenomeDominant = new GenomeDominantHandler(mapWithBorders);
 
-        leftVbox.getChildren().addAll(leftGrid.getGridPane(), leftChart.createChart(),leftGenomeDominant.createLabel());
-        rightVbox.getChildren().addAll(rightGrid.getGridPane(), rightChart.createChart(),rightGenomeDominant.createLabel());
-        stg.setScene(new Scene(buttonsAndBoardsContainer, 500, 500));
+        leftVbox.getChildren().addAll(
+                leftGrid.getGridPane(),
+                leftChart.createChart(),
+                leftGenomeDominant.createLabel(),
+                leftTrackedAnimal.createLabel());
+
+        rightVbox.getChildren().addAll(
+                rightGrid.getGridPane(),
+                rightChart.createChart(),
+                rightGenomeDominant.createLabel(),
+                leftTrackedAnimal.createLabel());
+
+        stg.setScene(new Scene(buttonsAndBoardsContainer));
         stg.setResizable(true);
-        Thread mapWithBordersThread = new Thread(new Simulation(mapWithBorders, rightGrid, rightChart,rightGenomeDominant));
-        Thread mapNoBordersThread = new Thread(new Simulation(mapNoBorders, leftGrid, leftChart,leftGenomeDominant));
+        stg.setMaximized(true);
+
+        Thread mapWithBordersThread = new Thread(new Simulation(
+                mapWithBorders,
+                rightGrid,
+                rightChart,
+                rightGenomeDominant,
+                rightTrackedAnimal));
+
+        Thread mapNoBordersThread = new Thread(new Simulation(
+                mapNoBorders,
+                leftGrid,
+                leftChart,
+                leftGenomeDominant,
+                leftTrackedAnimal));
+
         mapNoBordersThread.start();
         mapWithBordersThread.start();
     }

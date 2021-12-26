@@ -7,6 +7,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.VBox;
 
+@SuppressWarnings("ClassEscapesDefinedScope")
 public class ChartHandler {
     Map map;
     LineChart<Number, Number> lineChart;

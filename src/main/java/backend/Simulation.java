@@ -11,6 +11,7 @@ public class Simulation implements Runnable {
     private final GenomeDominantHandler genomeDominantHandler;
     private final TrackedAnimalHandler trackedAnimalHandler;
     private boolean simulationEnded;
+    private final AlertHandler alertHandler;
 
     public Simulation(
             Map map,
@@ -26,6 +27,7 @@ public class Simulation implements Runnable {
         this.chartHandler = chartHandler;
         this.genomeDominantHandler = genomeDominantHandler;
         this.simulationEnded = false;
+        this.alertHandler = new AlertHandler(map);
     }
 
     @Override
@@ -37,7 +39,12 @@ public class Simulation implements Runnable {
                         trackedAnimalHandler.refreshLabel(gridHandler.getTrackedAnimal());
                     }
                     map.incrementEpochNumber();
+                    statisticsWriter.writeStatistics();
                     map.removeDeadAnimals();
+                    if(map.isMagicVariant() && map.getMagicTricksLeft() > 0 && map.getAnimalsAmount() == 5){
+                        map.doTheMagic();
+                        alertHandler.handle();
+                    }
                     map.moveAnimals();
                     map.feedAnimals();
                     map.reproduceAnimals();
@@ -45,7 +52,6 @@ public class Simulation implements Runnable {
                     gridHandler.refreshMap();
                     chartHandler.refreshChart();
                     genomeDominantHandler.refreshLabel();
-                    statisticsWriter.writeStatistics();
                     Thread.sleep(200);
                     if(map.getAnimalsAmount() == 0){
                         simulationEnded = true;

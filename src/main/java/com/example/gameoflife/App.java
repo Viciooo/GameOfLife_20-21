@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -41,6 +42,11 @@ public class App extends Application {
     @FXML
     private TextField moveEnergyTF;
 
+    @FXML
+    private CheckBox mapWithBordersMagicOn;
+    @FXML
+    private CheckBox mapNoBordersMagicOn;
+
     public void startSimulation() throws Exception {
 
         mapWithBorders = new Map(
@@ -52,7 +58,8 @@ public class App extends Application {
                 Integer.parseInt(this.startEnergyTF.getText()),
                 Integer.parseInt(this.moveEnergyTF.getText()),
                 Double.parseDouble(this.plantEnergyTF.getText()),
-                false);
+                false,
+                this.mapWithBordersMagicOn.isSelected());
 
         mapNoBorders = new Map(
                 Integer.parseInt(this.animalsAmountTF.getText()),
@@ -63,7 +70,8 @@ public class App extends Application {
                 Integer.parseInt(this.startEnergyTF.getText()),
                 Integer.parseInt(this.moveEnergyTF.getText()),
                 Double.parseDouble(this.plantEnergyTF.getText()),
-                false);
+                false,
+                this.mapNoBordersMagicOn.isSelected());
 
         mapsInit();
     }

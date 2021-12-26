@@ -5,8 +5,6 @@ import backend.Grass;
 import backend.Map;
 import backend.Vector2d;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -16,12 +14,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 
+@SuppressWarnings("ClassEscapesDefinedScope")
 public class GridHandler {
     private final GridPane gridPane = new GridPane();
     private final Map map;
@@ -29,7 +26,6 @@ public class GridHandler {
     private final int y;
     private final int CELL_SIZE;
     private Animal trackedAnimal;
-    FXMLLoader loader = new FXMLLoader();
 
     public synchronized Animal getTrackedAnimal() {
         return trackedAnimal;
@@ -75,10 +71,10 @@ public class GridHandler {
                                 cell.setCursor(Cursor.HAND);
                                 cellButton.setOnAction(event -> {
                                     ((Animal) map.objectAt(renderedPosition)).swapIsTracked();
-                                    System.out.println(((Animal) map.objectAt(renderedPosition)).isTracked());
                                     if(((Animal) map.objectAt(renderedPosition)).isTracked()){
                                         if(trackedAnimal != null){
                                             trackedAnimal.swapIsTracked();
+                                            this.trackedAnimal = (Animal) map.objectAt(renderedPosition);
                                         }
                                         this.trackedAnimal = (Animal) map.objectAt(renderedPosition);
                                     }else{

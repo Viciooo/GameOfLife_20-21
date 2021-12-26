@@ -172,9 +172,7 @@ public class Animal {
                     }
                 }
             }
-            case 1 -> {
-                this.setDirection(this.direction.next());
-            }
+            case 1 -> this.setDirection(this.direction.next());
             case 2 -> {
                 this.setDirection(this.direction.next());
                 this.setDirection(this.direction.next());
@@ -249,9 +247,7 @@ public class Animal {
                 this.setDirection(this.direction.previous());
                 this.setDirection(this.direction.previous());
             }
-            case 7 -> {
-                this.setDirection(this.direction.previous());
-            }
+            case 7 -> this.setDirection(this.direction.previous());
         }
         dayPasses();
     }

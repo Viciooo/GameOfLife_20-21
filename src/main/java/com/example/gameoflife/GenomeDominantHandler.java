@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+@SuppressWarnings("ClassEscapesDefinedScope")
 public class GenomeDominantHandler {
     Map map;
     Label genomeDominant;
@@ -18,8 +19,6 @@ public class GenomeDominantHandler {
     }
 
     public void refreshLabel(){
-        Platform.runLater(() -> {
-            genomeDominant.setText("Most popular genome: "+map.getGenomeDominant().toString());
-        });
+        Platform.runLater(() -> genomeDominant.setText("Most popular genome: "+map.getGenomeDominant().toString()));
     }
 }

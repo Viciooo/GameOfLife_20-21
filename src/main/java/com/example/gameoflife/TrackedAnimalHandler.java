@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+@SuppressWarnings("ClassEscapesDefinedScope")
 public class TrackedAnimalHandler {
     private final Map map;
     private final Label info;

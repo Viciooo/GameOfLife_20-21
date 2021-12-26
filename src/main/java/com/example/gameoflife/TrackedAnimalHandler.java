@@ -20,12 +20,15 @@ public class TrackedAnimalHandler {
 
     public void refreshLabel(Animal animal) {
         Platform.runLater(() -> {
+            info.setText("Genes: "+animal.getGenes().toString());
             if(animal.isDead()){
                 info.setText(
                         "Died in the epoch " +
                         map.getEpochNumber() +
                         " Had  children " +
-                        animal.getChildrenAmount());
+                        animal.getChildrenAmount() +
+                        " Genes: "+
+                        animal.getGenes().toString());
             }
         });
     }

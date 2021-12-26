@@ -2,6 +2,7 @@ package com.example.gameoflife;
 
 import backend.Map;
 import backend.Simulation;
+import backend.StatisticsWriter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -40,7 +41,7 @@ public class App extends Application {
     @FXML
     private TextField moveEnergyTF;
 
-    public void startSimulation() {
+    public void startSimulation() throws Exception {
 
         mapWithBorders = new Map(
                 Integer.parseInt(this.animalsAmountTF.getText()),
@@ -76,7 +77,7 @@ public class App extends Application {
         HBox boards = new HBox(leftVbox, rightVbox);
         HBox buttonsContainer = new HBox(startStopLeft, startStopRight);
         boards.setAlignment(Pos.CENTER);
-        boards.setSpacing(200);
+        boards.setSpacing(300);
         leftVbox.setSpacing(10);
         rightVbox.setSpacing(10);
         VBox buttonsAndBoardsContainer = new VBox(boards, buttonsContainer);
@@ -84,20 +85,21 @@ public class App extends Application {
         wholeWindow.setFitToWidth(true);
         wholeWindow.setFitToHeight(true);
 
-        startStopLeft.setOnAction(event -> {
-            this.mapNoBorders.swapRunning();
-        });
+        startStopLeft.setOnAction(event -> this.mapNoBorders.swapRunning());
         startStopRight.setOnAction(event -> this.mapWithBorders.swapRunning());
 
         TrackedAnimalHandler leftTrackedAnimal = new TrackedAnimalHandler(mapNoBorders);
         GridHandler leftGrid = new GridHandler(mapNoBorders);
         ChartHandler leftChart = new ChartHandler(mapNoBorders);
         GenomeDominantHandler leftGenomeDominant = new GenomeDominantHandler(mapNoBorders);
+        StatisticsWriter leftWriter = new StatisticsWriter(mapNoBorders);
 
         TrackedAnimalHandler rightTrackedAnimal = new TrackedAnimalHandler(mapNoBorders);
         GridHandler rightGrid = new GridHandler(mapWithBorders);
         ChartHandler rightChart = new ChartHandler(mapWithBorders);
         GenomeDominantHandler rightGenomeDominant = new GenomeDominantHandler(mapWithBorders);
+        StatisticsWriter rightWriter = new StatisticsWriter(mapWithBorders);
+
 
         leftVbox.getChildren().addAll(
                 leftGrid.getGridPane(),
@@ -109,7 +111,7 @@ public class App extends Application {
                 rightGrid.getGridPane(),
                 rightChart.createChart(),
                 rightGenomeDominant.createLabel(),
-                leftTrackedAnimal.createLabel());
+                rightTrackedAnimal.createLabel());
 
         stg.setScene(new Scene(wholeWindow));
         stg.setResizable(true);
@@ -120,14 +122,16 @@ public class App extends Application {
                 rightGrid,
                 rightChart,
                 rightGenomeDominant,
-                rightTrackedAnimal));
+                rightTrackedAnimal,
+                rightWriter));
 
         Thread mapNoBordersThread = new Thread(new Simulation(
                 mapNoBorders,
                 leftGrid,
                 leftChart,
                 leftGenomeDominant,
-                leftTrackedAnimal));
+                leftTrackedAnimal,
+                leftWriter));
 
         mapNoBordersThread.start();
         mapWithBordersThread.start();

@@ -36,7 +36,7 @@ public class Map {
     private Vector2d jungleRightUpperCorner;
     private final ArrayList<Animal> listOfAllAnimals;
 
-    public Map(int animalsAmount, int width, int height, double jungleRatio, boolean hasBorders, double startEnergy, double moveEnergy, double plantEnergy, boolean isMapRunning) {
+    public Map(int animalsAmount, int width, int height, double jungleRatio, boolean hasBorders, double startEnergy, double moveEnergy, double plantEnergy, boolean isMapRunning) throws Exception {
         this.animalsAmount = animalsAmount;
         this.width = width;
         this.height = height;
@@ -167,7 +167,8 @@ public class Map {
 //        System.out.println(width + " / " + height + " / " + jungleLeftLowerCorner + " / " + jungleRightUpperCorner);
     }
 
-    public void spawnAllAnimals() {
+    public void spawnAllAnimals() throws Exception {
+//        Test test = new Test();
         Random rand = new Random();
         for (int i = 0; i < animalsAmount; i++) {
             Vector2d position = new Vector2d(rand.nextInt(width + 1), rand.nextInt(height + 1));
@@ -368,14 +369,6 @@ public class Map {
         return !hasBorders ? "No borders map" : "Map with borders";
     }
 
-    public  ArrayList<Animal> getStrongestAnimalsOnTheMap() {
-        ArrayList<Animal> strongestOnMap = new ArrayList<>();
-        for (ArrayList<Animal> animalList : animals.values()) {
-            strongestOnMap.add(animalList.get(0));
-        }
-        return strongestOnMap;
-    }
-
     public ArrayList<Animal> getListOfAllAnimals() {
         return listOfAllAnimals;
     }
@@ -445,9 +438,6 @@ public class Map {
 
     public void moveAnimals() {
         Random rand = new Random();
-//        System.out.println(getAnimalsAmount()+" animals and "+ getPlantsAmount() + " plants");
-//        System.out.println(getListOfAllAnimals().size()+" really animals and "+ getGrasses().size() + " really plants");
-//        cntAnimals();
         for (Animal animal : getListOfAllAnimals()) {
             animal.move(animal.getGenes().get(rand.nextInt(32)));
         }

@@ -19,10 +19,14 @@ public class TrackedAnimalHandler {
     }
 
     public void refreshLabel(Animal animal) {
-//        Platform.runLater(() -> {
+        Platform.runLater(() -> {
             if(animal.isDead()){
-                info.setText("Died in the epoch " + map.getEpochNumber() + "\n Had "+animal.getChildrenAmount()+" children");
+                info.setText(
+                        "Died in the epoch " +
+                        map.getEpochNumber() +
+                        " Had  children " +
+                        animal.getChildrenAmount());
             }
-//        });
+        });
     }
 }

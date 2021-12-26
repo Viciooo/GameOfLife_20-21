@@ -12,8 +12,6 @@ public class Map {
     private int deadAnimalsCnt;
     private double avgAnimalChildrenAmount;
     private ConcurrentHashMap<ArrayList<Integer>, Integer> genomeMap;
-
-
     private final int width;
     private final int height;
     private final boolean hasBorders;
@@ -21,7 +19,7 @@ public class Map {
     private final double moveEnergy;
     private final double jungleRatio;
     private final double plantEnergy;
-    private ConcurrentHashMap<Vector2d, TreeSet<Animal>> animals;
+    private ConcurrentHashMap<Vector2d, ArrayList<Animal>> animals;
     private ConcurrentHashMap<Vector2d, Grass> grasses;
     private boolean isMapRunning;
     private final MapDirection[] possibleMapDirections = {
@@ -68,6 +66,23 @@ public class Map {
 
     //chart functions
 
+//    public void cntAnimals(){
+//        int cnt = 0;
+//        for(TreeSet treeSet: animals.values()){
+//            cnt += treeSet.size();
+//        }
+//        System.out.println(cnt);
+//    }
+
+    public void sortAnimalList(ArrayList<Animal> animalList){
+        animalList.sort(new AnimalsComparator() {
+            @Override
+            public int compare(Animal o1, Animal o2) {
+                return super.compare(o1, o2);
+            }
+        });
+    }
+
     public void updateGenomeMap(Animal animal) {
         if (genomeMap.get(animal.getGenes()) != null) {
             int value = genomeMap.get(animal.getGenes());
@@ -97,6 +112,7 @@ public class Map {
         avgAnimalChildrenAmount -= animal.getChildrenAmount();
         animalsAmount--;
         avgAnimalChildrenAmount /= animalsAmount;
+//        System.out.println("death");
     }
 
     public int getAnimalsAmount() {
@@ -157,7 +173,7 @@ public class Map {
         int savannaWidth = (width - jungleWidth) / 2;
         this.jungleLeftLowerCorner = new Vector2d(savannaWidth, savannaHeight);
         this.jungleRightUpperCorner = new Vector2d(savannaWidth + jungleWidth, savannaHeight + jungleHeight);
-        System.out.println(width + " / " + height + " / " + jungleLeftLowerCorner + " / " + jungleRightUpperCorner);
+//        System.out.println(width + " / " + height + " / " + jungleLeftLowerCorner + " / " + jungleRightUpperCorner);
     }
 
     public void spawnAllAnimals() {
@@ -175,14 +191,9 @@ public class Map {
 
     public void spawnAnimal(Animal animal) {
         if (animals.get(animal.getPosition()) == null) {
-            TreeSet<Animal> newTreeSet = new TreeSet<>(new AnimalsComparator() {
-                @Override
-                public int compare(Animal o1, Animal o2) {
-                    return super.compare(o1, o2);
-                }
-            });
-            newTreeSet.add(animal);
-            animals.put(animal.getPosition(), newTreeSet);
+            ArrayList<Animal> newList = new ArrayList<>();
+            newList.add(animal);
+            animals.put(animal.getPosition(), newList);
         } else {
             animals.get(animal.getPosition()).add(animal);
         }
@@ -198,14 +209,9 @@ public class Map {
 
     public void place(Animal animal) {
         if (animals.get(animal.getPosition()) == null) {
-            TreeSet<Animal> newTreeSet = new TreeSet<>(new AnimalsComparator() {
-                @Override
-                public int compare(Animal o1, Animal o2) {
-                    return super.compare(o1, o2);
-                }
-            });
-            newTreeSet.add(animal);
-            animals.put(animal.getPosition(), newTreeSet);
+            ArrayList<Animal> newList = new ArrayList<>();
+            newList.add(animal);
+            animals.put(animal.getPosition(), newList);
         } else {
             animals.get(animal.getPosition()).add(animal);
         }
@@ -305,11 +311,10 @@ public class Map {
     }
 
     public void changePosition(Animal animal, Vector2d oldPosition) {
-        TreeSet<Animal> oldTreeSet = animals.get(oldPosition);
         place(animal);
-        for (Animal a : oldTreeSet) {
+        for (Animal a : animals.get(oldPosition)) {
             if (a.equals(animal)) {
-                oldTreeSet.remove(a);
+                animals.get(oldPosition).remove(a);
                 break;
             }
         }
@@ -319,7 +324,7 @@ public class Map {
         if (findAllStrongestAtPosition(position) == null || findAllStrongestAtPosition(position).size() == 0) {
             return null;
         }
-        return findAllStrongestAtPosition(position).get(findAllStrongestAtPosition(position).size() - 1);
+        return findAllStrongestAtPosition(position).get(0);
     }
 
     public Object objectAt(Vector2d position) {
@@ -338,7 +343,7 @@ public class Map {
     }
 
 
-    public ConcurrentHashMap<Vector2d, TreeSet<Animal>> getAnimals() {
+    public ConcurrentHashMap<Vector2d, ArrayList<Animal>> getAnimals() {
         return animals;
     }
 
@@ -375,8 +380,8 @@ public class Map {
 
     public  ArrayList<Animal> getStrongestAnimalsOnTheMap() {
         ArrayList<Animal> strongestOnMap = new ArrayList<>();
-        for (TreeSet<Animal> animalTreeSet : animals.values()) {
-            strongestOnMap.add(animalTreeSet.first());
+        for (ArrayList<Animal> animalList : animals.values()) {
+            strongestOnMap.add(animalList.get(0));
         }
         return strongestOnMap;
     }
@@ -432,7 +437,8 @@ public class Map {
 
     public void removeDeadAnimals() {
         ArrayList<Animal> animalsToRemove = new ArrayList<>();
-        for (TreeSet<Animal> animalsAtPosition : getAnimals().values()) {
+        for (ArrayList<Animal> animalsAtPosition : getAnimals().values()) {
+            sortAnimalList(animalsAtPosition);
             for (Animal animal : animalsAtPosition) {
                 if (animal.isDead()) {
                     animalsToRemove.add(animal);
@@ -449,7 +455,9 @@ public class Map {
 
     public void moveAnimals() {
         Random rand = new Random();
-        System.out.println(getListOfAllAnimals().toString());
+//        System.out.println(getAnimalsAmount()+" animals and "+ getPlantsAmount() + " plants");
+//        System.out.println(getListOfAllAnimals().size()+" really animals and "+ getGrasses().size() + " really plants");
+//        cntAnimals();
         for (Animal animal : getListOfAllAnimals()) {
             animal.move(animal.getGenes().get(rand.nextInt(32)));
         }

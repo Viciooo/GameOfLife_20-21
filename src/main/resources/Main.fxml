@@ -51,12 +51,30 @@
             <Font name="Agency FB Bold" size="25.0" />
          </font>
       </Text>
-      <TextField fx:id="mapHeightTF" layoutX="235.0" layoutY="214.0" text="15" />
-      <TextField fx:id="mapWidthTF" layoutX="235.0" layoutY="252.0" text="15" />
-      <TextField fx:id="jungleRatioTF" layoutX="255.0" layoutY="290.0" text="0.5" />
-      <TextField fx:id="animalsAmountTF" layoutX="343.0" layoutY="328.0" text="30" />
-      <TextField fx:id="startEnergyTF" layoutX="254.0" layoutY="437.0" text="100" />
-      <TextField fx:id="plantEnergyTF" layoutX="254.0" layoutY="475.0" text="100" />
+      <TextField fx:id="mapHeightTF" layoutX="235.0" layoutY="214.0" text="15">
+         <font>
+            <Font name="Agency FB" size="14.0" />
+         </font></TextField>
+      <TextField fx:id="mapWidthTF" layoutX="235.0" layoutY="252.0" text="15">
+         <font>
+            <Font name="Agency FB" size="14.0" />
+         </font></TextField>
+      <TextField fx:id="jungleRatioTF" layoutX="255.0" layoutY="290.0" text="0.5">
+         <font>
+            <Font name="Agency FB" size="14.0" />
+         </font></TextField>
+      <TextField fx:id="animalsAmountTF" layoutX="343.0" layoutY="328.0" text="30">
+         <font>
+            <Font name="Agency FB" size="14.0" />
+         </font></TextField>
+      <TextField fx:id="startEnergyTF" layoutX="254.0" layoutY="437.0" text="100">
+         <font>
+            <Font name="Agency FB" size="14.0" />
+         </font></TextField>
+      <TextField fx:id="plantEnergyTF" layoutX="254.0" layoutY="475.0" text="100">
+         <font>
+            <Font name="Agency FB" size="14.0" />
+         </font></TextField>
       <Button alignment="CENTER" layoutX="362.0" layoutY="621.0" mnemonicParsing="false" onAction="#startSimulation" prefHeight="45.0" prefWidth="165.0" text="Start simulation">
          <font>
             <Font name="Agency FB Bold" size="21.0" />
@@ -73,6 +91,9 @@
             <Font name="Agency FB" size="24.0" />
          </font>
       </Label>
-      <TextField fx:id="moveEnergyTF" layoutX="255.0" layoutY="513.0" text="3" />
+      <TextField fx:id="moveEnergyTF" layoutX="255.0" layoutY="513.0" text="3">
+         <font>
+            <Font name="Agency FB" size="14.0" />
+         </font></TextField>
    </children>
 </AnchorPane>

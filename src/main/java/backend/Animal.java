@@ -37,6 +37,10 @@ public class Animal {
         return energy;
     }
 
+    public String getEnergyAsString(){
+        return (int )Math.floor(energy)+"";
+    }
+
     public MapDirection getDirection() {
         return direction;
     }

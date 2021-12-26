@@ -116,8 +116,9 @@ public class Simulation implements Runnable {
                     gridHandler.refreshMap();
                     chartHandler.refreshChart();
                     genomeDominantHandler.refreshLabel();
-                    System.out.println(map.getAnimalsAmount()+" animals and "+map.getPlantsAmount() + " plants");
-                    System.out.println(map.getListOfAllAnimals().size()+" really animals and "+map.getGrasses().size() + " really plants");
+//                    System.out.println(map.getAnimalsAmount()+" animals and "+map.getPlantsAmount() + " plants");
+//                    System.out.println(map.getListOfAllAnimals().size()+" really animals and "+map.getGrasses().size() + " really plants");
+//                    map.cntAnimals();
 //                    if(map.getAnimalsAmount() == 0) {
 //                        map.swapRunning();
 //                        hardBlocked = true;

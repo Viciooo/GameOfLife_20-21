@@ -8,14 +8,19 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class GridHandler {
     private final GridPane gridPane = new GridPane();
@@ -67,8 +72,10 @@ public class GridHandler {
                                 cellButton.setPadding(new Insets(0, 0, 0, 0));
                                 cellButton.setMaxWidth(CELL_SIZE);
                                 cellButton.setMaxHeight(CELL_SIZE);
+                                cell.setCursor(Cursor.HAND);
                                 cellButton.setOnAction(event -> {
                                     ((Animal) map.objectAt(renderedPosition)).swapIsTracked();
+                                    System.out.println(((Animal) map.objectAt(renderedPosition)).isTracked());
                                     if(((Animal) map.objectAt(renderedPosition)).isTracked()){
                                         if(trackedAnimal != null){
                                             trackedAnimal.swapIsTracked();
@@ -79,13 +86,33 @@ public class GridHandler {
                                     }
                                 });
                                 if(((Animal) map.objectAt(renderedPosition)).isTracked()){
-                                    ImageView trackedCell = new ImageView(new Image(new FileInputStream("src/main/resources/hedgehog_img_tracked.jpg")));
-                                    trackedCell.setFitWidth(CELL_SIZE);
-                                    trackedCell.setFitHeight(CELL_SIZE);
-                                    cellButton.setGraphic(trackedCell);
+                                    Image tracked = new Image(new FileInputStream("src/main/resources/hedgehog_img_tracked.jpg"));
+
+                                    BackgroundImage backgroundImage = new BackgroundImage(
+                                            tracked,
+                                            BackgroundRepeat.NO_REPEAT,
+                                            BackgroundRepeat.NO_REPEAT,
+                                            BackgroundPosition.DEFAULT,
+                                            new BackgroundSize(CELL_SIZE,CELL_SIZE,true,true,true,false));
+
+                                    Background background = new Background(backgroundImage);
+                                    cellButton.setBackground(background);
                                 }else{
-                                    cellButton.setGraphic(cell);
+                                    Image notTracked = new Image(new FileInputStream("src/main/resources/hedgehog_img.jpg"));
+
+                                    BackgroundImage backgroundImage = new BackgroundImage(
+                                            notTracked,
+                                            BackgroundRepeat.NO_REPEAT,
+                                            BackgroundRepeat.NO_REPEAT,
+                                            BackgroundPosition.DEFAULT,
+                                            new BackgroundSize(CELL_SIZE,CELL_SIZE,true,true,true,false));
+
+                                    Background background = new Background(backgroundImage);
+                                    cellButton.setBackground(background);
                                 }
+                                String energyOfAnimal = ((Animal) map.objectAt(renderedPosition)).getEnergyAsString();
+                                cellButton.setText(energyOfAnimal);
+                                cellButton.setFont(Font.font("Agency FB", FontWeight.BOLD,15));
                                 gridPane.add(cellButton, i, j);
                             }else{
                                 gridPane.add(cell, i, j);

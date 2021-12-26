@@ -41,48 +41,27 @@ public class ChartHandler {
         lifeSpanSeries.setName("Average animal lifespan");
 
         childrenAmountSeries = new XYChart.Series<>();
-        childrenAmountSeries.setName("Average animal lifespan");
+        childrenAmountSeries.setName("Average animal children amount");
     }
 
     public VBox createChart() {
         lineChart.getData().add(animalSeries);
         lineChart.getData().add(grassSeries);
         lineChart.getData().add(energySeries);
-//        lineChart.getData().add(lifeSpanSeries);
-//        lineChart.getData().add(childrenAmountSeries);
+        lineChart.getData().add(lifeSpanSeries);
+        lineChart.getData().add(childrenAmountSeries);
         lineChart.setCreateSymbols(false);
         return new VBox(lineChart);
     }
 
     public void refreshChart() {
-//        Platform.runLater(() -> {
-//            if (animalSeries.getData().size() > WINDOW_SIZE)
-//                animalSeries.getData().remove(0);
-//
-//            if (grassSeries.getData().size() > WINDOW_SIZE)
-//                grassSeries.getData().remove(0);
-//
-//            if (energySeries.getData().size() > WINDOW_SIZE)
-//                energySeries.getData().remove(0);
-//
-//            if (lifeSpanSeries.getData().size() > WINDOW_SIZE)
-//                lifeSpanSeries.getData().remove(0);
-//
-//            if (childrenAmountSeries.getData().size() > WINDOW_SIZE)
-//                childrenAmountSeries.getData().remove(0);
+        Platform.runLater(() -> {
 
-            animalSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getListOfAllAnimals().size()));
-//            animalSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), 2));
+            animalSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getAnimalsAmount()));
             grassSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getPlantsAmount()));
             energySeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getAvgAnimalsEnergy()));
-//            lifeSpanSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getAvgAnimalLifeSpan()));
-//            lifeSpanSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), 2));
-//            childrenAmountSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getAvgAnimalChildrenAmount()));
-//        });
-//        lineChart.getData().add(animalSeries);
-//        lineChart.getData().add(grassSeries);
-//        lineChart.getData().add(energySeries);
-//        lineChart.getData().add(lifeSpanSeries);
-//        lineChart.getData().add(childrenAmountSeries);
+            lifeSpanSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getAvgAnimalLifeSpan()));
+            childrenAmountSeries.getData().add(new XYChart.Data<>(map.getEpochNumber(), map.getAvgAnimalChildrenAmount()));
+        });
     }
 }

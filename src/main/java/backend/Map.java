@@ -55,6 +55,8 @@ public class Map {
         this.genomeDominantCnt = 0;
         this.deadAnimalsCnt = 0;
         this.plantsAmount = 0;
+        this.avgAnimalLifeSpan = 0;
+        this.avgAnimalChildrenAmount = 0;
 //        ArrayList<Integer> testGenes = new ArrayList<>();
 //        for(int i = 0;i<32;i++){
 //            testGenes.add(0);
@@ -63,16 +65,6 @@ public class Map {
 //        spawnAnimal(testAnimal);
         spawnAllAnimals();
     }
-
-    //chart functions
-
-//    public void cntAnimals(){
-//        int cnt = 0;
-//        for(TreeSet treeSet: animals.values()){
-//            cnt += treeSet.size();
-//        }
-//        System.out.println(cnt);
-//    }
 
     public void sortAnimalList(ArrayList<Animal> animalList){
         animalList.sort(new AnimalsComparator() {
@@ -112,7 +104,6 @@ public class Map {
         avgAnimalChildrenAmount -= animal.getChildrenAmount();
         animalsAmount--;
         avgAnimalChildrenAmount /= animalsAmount;
-//        System.out.println("death");
     }
 
     public int getAnimalsAmount() {
@@ -304,7 +295,6 @@ public class Map {
                         mommy.getPosition()
                 );
                 spawnAnimal(child);
-//                updateGenomeMap(child);
                 birthUpdateFor_avgAnimalChildrenAmount();
             }
         }
